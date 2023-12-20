@@ -36,6 +36,32 @@ getAllSongs() async {
   print(allsongDb.values);
 }
 
+searchBar(String character){
+  final allsongDb= Hive.box<ModalClassAllSongs>("allSongs2");
+ // List<ModalClassAllSongs> modalSearch=[];
+
+  /*final suggestions=allsongDb.values.forEach((modal) {
+    final nameLowerCase=modal.display_name.toLowerCase();
+    final serachItem=character.toLowerCase();
+    return nameLowerCase.contains(serachItem);
+
+  })
+  */
+ final suggestions= allsongDb.values.where((modal) {
+  final nameLowerCase=modal.display_name.toLowerCase();
+  final serachItem=character.toLowerCase();
+  return nameLowerCase.contains(serachItem);
+  }
+  ).toList();
+ db_AllSongsNotifier.value.clear();
+ suggestions.forEach((element) {
+   db_AllSongsNotifier.value.add(element);
+ });
+  db_AllSongsNotifier.notifyListeners();
+  print("Suggestions     $suggestions");
+}
+
+
 
 putLength(int num){
   final allsongDb= Hive.box("SongLength");
@@ -57,9 +83,11 @@ clearAllSongsBox(String boxName)async{
 
 
 
- editNode(int? songId)   {
-   Hive.box("allSongs2");
-
+ editNode(ModalClassAllSongs modal, int? songId)   {
+   final allsongDb=Hive.box<ModalClassAllSongs>("allSongs2");
+   allsongDb.putAt(songId!,modal);
+   getAllSongs();
+   print("Editing Details ${allsongDb.getAt(songId)?.display_name}");
 }
 
  deleteNode(int? songId)  {
@@ -76,7 +104,7 @@ putPlayingStatus(bool stat){
     opClDb.put("status",stat);
 }
 
-getPlayingStatus(){
+ getPlayingStatus(){
   final opClDb= Hive.box("playing");
   return  opClDb.get("status");
 }

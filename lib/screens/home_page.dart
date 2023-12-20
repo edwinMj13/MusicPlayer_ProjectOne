@@ -18,7 +18,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   PlayerControllers playerControllers = PlayerControllers();
   List<SongModel> songlist = [];
   List<SongModel> modalAll = [];
@@ -27,12 +27,24 @@ class _HomePageState extends State<HomePage> {
   var syncClicked = false;
   var clickedfiles = false;
   late BuildContext mainContext;
+  var playlistAddFloating = true;
+  List<Tab> tabs = <Tab>[
+    const Tab(
+      text: "Albums",
+    ),
+    const Tab(
+      text: "Playlists",
+    )
+  ];
+
+  //late TabController tabController;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     requestStoragePermission();
+    //  tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -41,6 +53,15 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
     playerControllers.audioPlayer.dispose();
   }
+
+
+  /*
+  * added default tab controller globally
+  * to change floating icon to playsection to add to playlist
+  *
+  * */
+
+
 
   void requestStoragePermission() async {
     var permissionStatus = await Permission.storage.request();
@@ -70,81 +91,99 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     getALbums();
-    mainContext=context;
+    mainContext = context;
     print("Home Page Song Status ${playerControllers.audioPlayer}");
     return WillPopScope(
       onWillPop: () async => false,
-      child: Scaffold(
-        backgroundColor: Colors.blueGrey,
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: const Text("Audio Mix"),
-          actions: <Widget>[
-            PopupMenuButton(
-              itemBuilder: (context) {
-                return [
-                  const PopupMenuItem(value: 1, child: Text("Sync")),
-                ];
-              },
-              onSelected: (value) {
-                futureSyncMethod();
-              },
-            )
-          ],
-        ),
-        body: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(
-              flex: 1,
-           //   height: MediaQuery.of(context).size.height * 0.15,
-             child: Column(
-               mainAxisAlignment: MainAxisAlignment.center,
-               children: [
-                 Padding(
-                   padding: const EdgeInsets.only(left: 30.0, right: 30.0),
-                   child: topRow(),
-                 ),
-               ],
-             ),
-           ),
-            const Expanded(
-              flex: 4,
-                child: DefaultTabController(
-                  length: 2,
-                  initialIndex: 0,
-                  child: Column(
-                    children: [
-                      TabBar(
-                          isScrollable: false,
-                          indicatorColor: Colors.white,
-                          labelPadding: EdgeInsets.symmetric(horizontal: 30),
-                          tabs: [
-                        Tab(
-                          text: "Albums",
-                        ),
-                        Tab(
-                          text: "Playlists",
-                        )
-                      ]),
-                      Expanded(
-                        child: TabBarView(children: [
-                          AlbumList(),
-                       //   albumListView(),
-                      //    playListView();,
-                          PlayNameWidget(),
-                        ]),
-                      ),
-                    ],
-                  )),
+      child: DefaultTabController(
+          length: tabs.length,
+          child: Builder(builder: (BuildContext ctx) {
+            final tabController =
+            DefaultTabController.of(ctx);
+            tabController.addListener(() {
+              if (!tabController.indexIsChanging) {
+                print(tabController.index);
+                if(tabController.index==1){
+                  playlistAddFloating=true;
+                }else{
+                  playlistAddFloating=false;
+                }
+              }
+            });
+            return Scaffold(
+              backgroundColor: Colors.blueGrey,
+              floatingActionButton: playlistAddFloating
+                  ? FloatingActionButton(
+                      backgroundColor: Colors.white,
+                      onPressed: () {},
+                      child: const Icon(
+                        Icons.add,
+                        color: Colors.blueGrey,
+                      ))
+                  : null,
+              appBar: AppBar(
+                automaticallyImplyLeading: false,
+                title: const Text("Audio Mix"),
+                actions: <Widget>[
+                  PopupMenuButton(
+                    itemBuilder: (context) {
+                      return [
+                        const PopupMenuItem(value: 1, child: Text("Sync")),
+                      ];
+                    },
+                    onSelected: (value) {
+                      futureSyncMethod();
+                    },
+                  )
+                ],
               ),
-          ],
-        ),
-      ),
+              body: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 1,
+                    //   height: MediaQuery.of(context).size.height * 0.15,
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 30.0, right: 30.0),
+                          child: topRow(),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    flex: 4,
+                    child: Column(
+                      children: [
+                        TabBar(
+                            isScrollable: false,
+                            indicatorColor: Colors.white,
+                            labelPadding:
+                                const EdgeInsets.symmetric(horizontal: 30),
+                            tabs: tabs),
+                        const Expanded(
+                          child: TabBarView(children: [
+                            AlbumList(),
+                            //   albumListView(),
+                            //    playListView();,
+                            PlayNameWidget(),
+                          ]),
+                        ),
+                      ],
+                    ),
+                  )
+                ],
+              ),
+            );
+
+          })),
     );
   }
 
-  Widget topRow(){
+  Widget topRow() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -158,9 +197,11 @@ class _HomePageState extends State<HomePage> {
           width: 80,
           child: InkWell(
             onTap: () {
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (ctx) {
-                return  AllSongsScreen(fromPageName:"all",title: 'All Songs',);
+              Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
+                return AllSongsScreen(
+                  fromPageName: "all",
+                  title: 'All Songs',
+                );
               }));
             },
             child: const Column(
@@ -190,9 +231,8 @@ class _HomePageState extends State<HomePage> {
           height: 80,
           width: 80,
           child: InkWell(
-            onTap: (){
-              Navigator.of(context)
-                  .push(MaterialPageRoute(builder: (ctx) {
+            onTap: () {
+              Navigator.of(context).push(MaterialPageRoute(builder: (ctx) {
                 return AllSongsScreen(
                   fromPageName: 'favorite',
                   title: "Favorites",
@@ -202,8 +242,7 @@ class _HomePageState extends State<HomePage> {
             child: const Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.favorite_border,
-                    color: Colors.white, size: 30),
+                Icon(Icons.favorite_border, color: Colors.white, size: 30),
                 SizedBox(
                   height: 10,
                 ),
@@ -233,6 +272,7 @@ class _HomePageState extends State<HomePage> {
       ],
     );
   }
+
 /*
   Widget albumListView(){
     return ValueListenableBuilder(
@@ -298,7 +338,7 @@ class _HomePageState extends State<HomePage> {
         });
   }
   */
- /* Widget playListView() {
+  /* Widget playListView() {
     return ValueListenableBuilder(
         valueListenable: valueListenable,
         builder: builder);
@@ -336,49 +376,47 @@ class _HomePageState extends State<HomePage> {
     albumDb.put("idAlbum", uniquelist);
   }
 
-  void futureSyncMethod()async{
-   List<SongModel> songModal= await PlayerControllers().audioQuery.querySongs(
-      ignoreCase: true,
-      orderType: OrderType.ASC_OR_SMALLER,
-      sortType: null,
-      uriType: UriType.EXTERNAL,
-    );
-   print("await songModal  ${await songModal}");
+  void futureSyncMethod() async {
+    List<SongModel> songModal = await PlayerControllers().audioQuery.querySongs(
+          ignoreCase: true,
+          orderType: OrderType.ASC_OR_SMALLER,
+          sortType: null,
+          uriType: UriType.EXTERNAL,
+        );
+    print("await songModal  ${await songModal}");
 //  songlist.add(await songModal);
 
-   modalAll.clear();
-   if (songModal.isNotEmpty) {
-     for (var elem in songModal) {
-       if (elem.title.length == 14) {
-         if (elem.title.substring(0, 14) != "Call recording") {
-           modalAll.add(elem);
-         }
-       } else if (elem.title.length > 13 &&
-           elem.title.substring(0, 14) != "Call recording") {
-         modalAll.add(elem);
-       } else if (elem.title.length <= 13) {
-         modalAll.add(elem);
-       }
-     }
-     for (int i = 0; i < modalAll.length; i++) {
-       albumNAMES.add(modalAll[i].album!);
-     }
-     var seen = <String>{};
-     List<String> uniquelist =
-     albumNAMES.where((alb) => seen.add(alb)).toList();
-     print("uniquelist    $uniquelist");
+    modalAll.clear();
+    if (songModal.isNotEmpty) {
+      for (var elem in songModal) {
+        if (elem.title.length == 14) {
+          if (elem.title.substring(0, 14) != "Call recording") {
+            modalAll.add(elem);
+          }
+        } else if (elem.title.length > 13 &&
+            elem.title.substring(0, 14) != "Call recording") {
+          modalAll.add(elem);
+        } else if (elem.title.length <= 13) {
+          modalAll.add(elem);
+        }
+      }
+      for (int i = 0; i < modalAll.length; i++) {
+        albumNAMES.add(modalAll[i].album!);
+      }
+      var seen = <String>{};
+      List<String> uniquelist =
+          albumNAMES.where((alb) => seen.add(alb)).toList();
+      print("uniquelist    $uniquelist");
 
-     doSaveToHive(modalAll, uniquelist);
-   }
+      doSaveToHive(modalAll, uniquelist);
+    }
   }
 
   void dataFound() {
     if (clickedfiles == true) {
       playerControllers.scaffoldMessage(mainContext, "No New Data Found!");
-    }else{
+    } else {
       playerControllers.scaffoldMessage(mainContext, "New Data Updated!");
     }
   }
-
-
 }

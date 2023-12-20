@@ -5,6 +5,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:music_player_project_one/utils/controllers.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'dart:core';
+
 //import 'package:audioplayers/audioplayers.dart';
 import '../hive_db/db_functions.dart';
 import '../modal_class/songList.dart';
@@ -47,11 +48,12 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
     super.dispose();
     playerControllers.audioPlayer.dispose();
   }
+
   String formatTime(int seconds) {
     return '${(Duration(seconds: seconds))}'.split('.')[0].padLeft(8, '0');
   }
 
-@override
+  @override
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -65,6 +67,7 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
     intImage = widget.intImage;
     songTitle = widget.songTitle;
     artistName = widget.artistName;
+
     //  isLayoutVisible=widget.isLayoutVisible;
     print("BottomSheetPlayer      toPlayerUri $uri\n"
         "BottomSheetPlayer        toPlayerIndex $index\n"
@@ -73,10 +76,11 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
         "BottomSheetPlayer        toPlayerTitle $songTitle\n");
     double heightSheet = MediaQuery.of(context).size.height;
 
-    if(getPlayingStatus()!=true) {
+    if (getPlayingStatus() != true) {
       print("get PLaying Status IF FALSE ${getPlayingStatus()}");
       playerControllers.playSong(uri, index);
     }
+
     putPlayingStatus(true);
 
     return Scaffold(
@@ -85,183 +89,183 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
   }
 
   fullPlayer(double heightSheet, BuildContext context) {
+    int currentIndex=index;
+
     return SafeArea(
       child: Container(
         constraints:
             BoxConstraints(minHeight: heightSheet, maxHeight: heightSheet),
         decoration: const BoxDecoration(color: Colors.blueGrey),
         child: Column(children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 5.0),
-            child: GestureDetector(
-              onTap: () {
-                //        print("ctx    ${ctx.globalPosition}     ${ctx.localPosition}");
-                setState(() {
-                  clickedArrow = !clickedArrow;
-                });
-              },
-              child: Icon(
-                !clickedArrow
-                    ? Icons.keyboard_arrow_up
-                    : Icons.keyboard_arrow_down_sharp,
-                color: Colors.white,
-                size: 20,
-              ),
-            ),
-          ),
           Expanded(
               child: Padding(
             padding: const EdgeInsets.only(top: 10.0, right: 10.0),
-            child: Column(
-              children: [
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  songTitle!,
-                  style: TextStyle(color: Colors.white),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Text(
-                  artistName!,
-                  style: TextStyle(color: Colors.white),
-                ),
-                const SizedBox(
-                  height: 40,
-                ),
-                Container(
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50.0),
-                      color: Colors.grey[100]),
-                  child: ConstrainedBox(
-                    constraints: const BoxConstraints(
-                        maxHeight: 300,
-                        maxWidth: 300,
-                        minHeight: 300,
-                        minWidth: 300),
-                    child: QueryArtworkWidget(
-                        id: intImage,
-                        type: ArtworkType.AUDIO,
-                        artworkHeight: 300,
-                        artworkWidth: 300,
-                        quality: 100,
-                        nullArtworkWidget: const Icon(
-                          Icons.music_note,
-                          color: Colors.black,
-                          size: 200,
-                        )),
-                  ),
-                ),
-              /*  ValueListenableBuilder(
-                  valueListenable: null,
-                  builder: (BuildContext context, value, Widget? child) {
-                    return */
-                      Column(
+            child: StreamBuilder<Duration>(
+              stream: playerControllers.audioPlayer.positionStream,
+              builder:
+                  (BuildContext context, AsyncSnapshot<Duration> snapshot) {
+                var currentPosition = snapshot.data ?? Duration.zero;
+                var totalDuration =
+                    playerControllers.audioPlayer.duration ?? Duration.zero;
+     //           print("currentPosition   $currentPosition");
+     //           print("totalDuration   $totalDuration");
+
+                //    int currentIndex=index-1;
+
+                return Column(
+                  children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      songList[currentIndex].display_name,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      songList[currentIndex].artist!,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(50.0),
+                          color: Colors.grey[100]),
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                            maxHeight: 300,
+                            maxWidth: 300,
+                            minHeight: 300,
+                            minWidth: 300),
+                        child: QueryArtworkWidget(
+                            id: intImage,
+                            type: ArtworkType.AUDIO,
+                            artworkHeight: 300,
+                            artworkWidth: 300,
+                            quality: 100,
+                            nullArtworkWidget: const Icon(
+                              Icons.music_note,
+                              color: Colors.black,
+                              size: 200,
+                            )),
+                      ),
+                    ),
+                    Column(
                       children: [
-
-                        StreamBuilder<Duration>(
-                          stream: playerControllers.audioPlayer.positionStream,
-                          builder: (context, snapshot) {
-                            var currentPosition = snapshot.data ?? Duration.zero;
-                            var totalDuration = playerControllers.audioPlayer.duration ?? Duration.zero;
-                            print("currentPosition   $currentPosition");
-                            print("totalDuration   $totalDuration");
-                            return Column(
-                              children: [
-                                Slider(
-                                    inactiveColor: Colors.grey,
-                                    thumbColor: Colors.white,
-                                    activeColor: Colors.white,
-                                    min: 0,
-                                    max: totalDuration.inSeconds.toDouble(),
-                                    value: currentPosition.inSeconds.toDouble(),
-                                    onChanged: (value) {
-                                      final position=Duration(seconds: value.toInt());
-                                      playerControllers.audioPlayer.seek(position);
-                                      //player.resume();
-                                    }),
-                                Padding(
-                                  padding: const EdgeInsets.only(left:10.0,right: 10.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        formatTime(currentPosition.inSeconds.toInt()),
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                      Text(
-                                        formatTime((totalDuration.inSeconds.toInt())),
-                                        style: TextStyle(color: Colors.white),
-                                      ),
-                                    ],
-                                  ),
+                        Slider(
+                            inactiveColor: Colors.grey,
+                            thumbColor: Colors.white,
+                            activeColor: Colors.white,
+                            min: 0,
+                            max: totalDuration.inSeconds.toDouble(),
+                            value: currentPosition.inSeconds.toDouble(),
+                            onChanged: (value) {
+                              final position = Duration(seconds: value.toInt());
+                              playerControllers.audioPlayer.seek(position);
+                              //player.resume();
+                            }),
+                        Padding(
+                          padding:
+                              const EdgeInsets.only(left: 10.0, right: 10.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                formatTime(currentPosition.inSeconds.toInt()),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                              Text(
+                                formatTime((totalDuration.inSeconds.toInt())),
+                                style: const TextStyle(color: Colors.white),
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 30,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  borderRadius: BorderRadius.circular(100.0),
                                 ),
-                                const SizedBox(height: 30,),
+                                child: IconButton(
+                                    onPressed: () {
+                                      if (currentIndex == 0) {
+                                        currentIndex = 0;
+                                        playerControllers.scaffoldMessage(context, "No song ahead");
+                                      } else if (currentIndex > 0) {
+                                        currentIndex--;
+                                        playerControllers.stopSong();
+                                        playWithDelay(songList[currentIndex].uri, currentIndex);
+                                      }
+                                      print(
+                                          "currentIndex PREVIOUS    $currentIndex");
 
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(
-                                        decoration:BoxDecoration(
-                                          color: Colors.grey[100],
-                                          borderRadius: BorderRadius.circular(100.0),
-                                        ),
-                                        child: IconButton(onPressed: () {
-                                          setState(() {
-                                            playerControllers.audioPlayer.seekToPrevious();
-                                          });
-                                        }, icon: Icon(Icons.skip_previous,))),
-                                    SizedBox(width:30,),
-                                    Container(
-                                        decoration:BoxDecoration(
-                                          color: Colors.grey[100],
-                                          borderRadius: BorderRadius.circular(100.0),
-                                        ),
-                                        child: IconButton(onPressed: () {
-                                              print("isplaying${playerControllers.isPlaying}");
-                                              if(getPlayingStatus()==false) {
-                                                playerControllers.playSong(
-                                                    uri, index);
-                                              }else{
-                                                playerControllers.pauseSong();
-                                              }
-                                        }, icon: Icon(getPlayingStatus() && currentPosition <totalDuration
-                                            ?Icons.pause
-                                            :Icons.play_arrow))),
-                                    SizedBox(width: 30,),
-                                    Container(
-                                        decoration:BoxDecoration(
-                                          color: Colors.grey[100],
-                                          borderRadius: BorderRadius.circular(100.0),
-                                        ),
-                                        child: IconButton(onPressed: () {
-                                          setState(() {
-                                            playerControllers.audioPlayer.seekToNext();
-                                          });
-                                        }, icon: Icon(Icons.skip_next))),
-                                  ],
-                                )
-                              ],
-                            );
-                          }
-                        ),
+                                    },
+                                    icon: const Icon(
+                                      Icons.skip_previous,
+                                    ))),
+                            const SizedBox(
+                              width: 30,
+                            ),
+                            Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  borderRadius: BorderRadius.circular(100.0),
+                                ),
+                                child: IconButton(
+                                    onPressed: () {
+                                      print(
+                                          "isplaying${playerControllers.isPlaying}");
+                                      if (getPlayingStatus() == false) {
+                                        playerControllers.playSong(songList[currentIndex].uri, index);
+                                      } else {
+                                        playerControllers.pauseSong();
+                                      }
+                                    },
+                                    icon: Icon(getPlayingStatus() &&
+                                            currentPosition < totalDuration
+                                        ? Icons.pause
+                                        : Icons.play_arrow))),
+                            const SizedBox(
+                              width: 30,
+                            ),
+                            Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.grey[100],
+                                  borderRadius: BorderRadius.circular(100.0),
+                                ),
+                                child: IconButton(
+                                    onPressed: () {
+                                      if (currentIndex == songList.length-1) {
+                                        currentIndex = index;
+                                        playerControllers.scaffoldMessage(context, "Last Song");
+                                      } else if (currentIndex < songList.length-1) {
+                                        currentIndex++;
+                                        playerControllers.stopSong();
+                                        putPlayingStatus(false);
+                                        playWithDelay(songList[currentIndex].uri, currentIndex);
+                                      }
 
-
-                      /*  LinearProgressIndicator(
-                          color: Colors.black,
-                          backgroundColor: Colors.grey,
-                          value: currentProgress,
-                        ),
-*/
-
+                                      print(
+                                          "currentIndex NEXT    $currentIndex");
+                                    },
+                                    icon: const Icon(Icons.skip_next))),
+                          ],
+                        )
                       ],
-                    ) ,
-                /*  },
-                ),*/
-
-              ],
+                    ),
+                  ],
+                );
+              },
             ),
           ))
         ]),
@@ -269,5 +273,10 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
     );
   }
 
-
+  playWithDelay(String? uri, int currentIndex) {
+    //PlayerControllers playerControllers2=PlayerControllers();
+    return Future.delayed(const Duration(milliseconds: 100), () {
+      playerControllers.playSong(uri, currentIndex);
+    });
+  }
 }

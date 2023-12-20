@@ -57,12 +57,18 @@ class AlbumList extends StatelessWidget {
                         const SizedBox(
                           height: 5,
                         ),
-                        RichText(
-                          overflow: TextOverflow.ellipsis,
-                          strutStyle: const StrutStyle(fontSize: 15.0),
-                          text: TextSpan(
-                            style: const TextStyle(color: Colors.white),
-                            text: itemAlbumName,
+                        Container(
+                          width: 120,
+                          child: Align(
+                            alignment: AlignmentDirectional.center,
+                            child: RichText(
+                              overflow: TextOverflow.ellipsis,
+                              strutStyle: const StrutStyle(fontSize: 15.0),
+                              text: TextSpan(
+                                style: const TextStyle(color: Colors.white,),
+                                text: itemAlbumName,
+                              ),
+                            ),
                           ),
                         ),
                       ],

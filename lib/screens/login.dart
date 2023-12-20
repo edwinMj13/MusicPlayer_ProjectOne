@@ -57,7 +57,6 @@ class _LoginPageState extends State<LoginPage> {
       getSongs();
     } else {
       requestStoragePermission();
-
     }
   }
 

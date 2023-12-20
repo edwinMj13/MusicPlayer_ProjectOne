@@ -38,22 +38,20 @@ changeDurationToSeconds(seconds){
 }
 
 stopSong(){
-  if(getPlayingStatus()==true) {
     try {
       print("Stop Song BEFORE STOP${audioPlayer.playing}");
-      audioPlayer.pause();
-      isPlaying = false;
+      audioPlayer.stop();
+      putPlayingStatus(false);
       print("Stop Song AFTER STOP${audioPlayer.playing}");
     } on Exception catch (e) {
       print("Stop Song Exception ${e.toString()}");
     }
-  }
 }
 
 
 playSong(String? uri,index){
   playIndex=index;
-  print("IsPlaying OUTSIDE   $getPlayingStatus()");
+  print("IsPlaying OUTSIDE   ${getPlayingStatus()}");
   if(getPlayingStatus()!=true) {
     try {
       audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(uri!)));
@@ -70,7 +68,6 @@ pauseSong(){
   if(getPlayingStatus()!=false) {
     try {
       audioPlayer.pause();
-      isPlaying = false;
       putPlayingStatus(false);
     } on Exception catch (e) {
       print(e.toString());

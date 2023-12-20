@@ -42,6 +42,23 @@ class ModalClassAllSongs{
     required this.album,
     required this.id,
     this.allSongsId});
+
+/*
+  static ModalClassAllSongs(Map<String, Object?> element){
+    final songid=element[songId].
+    this.playListStatus,
+    this.favoritesListStatus,
+    this.playListName,
+    this.favoriteListName,
+    required this.uri,
+    required this.artist,
+    required this.title,
+    required this.display_name,
+    required this.album,
+    required this.id,
+    this.allSongsId
+  };
+}*/
 }
 
 
