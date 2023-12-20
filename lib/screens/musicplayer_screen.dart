@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:music_player_project_one/hive_db/db_recent_list.dart';
 import 'package:music_player_project_one/utils/controllers.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'dart:core';
@@ -41,6 +42,7 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
   bool? isLayoutVisible;
   String? artistName;
   PlayerControllers playerControllers = PlayerControllers();
+  ValueNotifier<Duration> valueNotifierDuration=ValueNotifier(Duration.zero);
 
   @override
   void dispose() {
@@ -78,7 +80,21 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
 
     if (getPlayingStatus() != true) {
       print("get PLaying Status IF FALSE ${getPlayingStatus()}");
-      playerControllers.playSong(uri, index);
+      playerControllers.playSong(uri);
+      List<String> songNameTitles=[];
+      ModalClassAllSongs modalAllSongs = ModalClassAllSongs(uri: uri,
+          artist: songList[index].artist,
+          title: songList[index].title,
+          display_name: songList[index].display_name,
+          album: songList[index].album,
+          id: songList[index].id);
+      songNameTitles=getNameCheck();
+      if(!songNameTitles.contains(modalAllSongs.display_name)){
+        addRecentData(modalAllSongs);
+        if(songNameTitles.length==10){
+          removeLastSong();
+        }
+      }
     }
 
     putPlayingStatus(true);
@@ -86,6 +102,14 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
     return Scaffold(
       body: fullPlayer(heightSheet, context),
     );
+  }
+
+  image(){
+    int im=0;
+    do{
+      im=intImage;
+    }while(0>0);
+    return im;
   }
 
   fullPlayer(double heightSheet, BuildContext context) {
@@ -142,7 +166,7 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                             minHeight: 300,
                             minWidth: 300),
                         child: QueryArtworkWidget(
-                            id: intImage,
+                            id: image(),
                             type: ArtworkType.AUDIO,
                             artworkHeight: 300,
                             artworkWidth: 300,
@@ -226,7 +250,7 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                                       print(
                                           "isplaying${playerControllers.isPlaying}");
                                       if (getPlayingStatus() == false) {
-                                        playerControllers.playSong(songList[currentIndex].uri, index);
+                                        playerControllers.playSong(songList[currentIndex].uri);
                                       } else {
                                         playerControllers.pauseSong();
                                       }
@@ -276,7 +300,7 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
   playWithDelay(String? uri, int currentIndex) {
     //PlayerControllers playerControllers2=PlayerControllers();
     return Future.delayed(const Duration(milliseconds: 100), () {
-      playerControllers.playSong(uri, currentIndex);
+      playerControllers.playSong(uri);
     });
   }
 }

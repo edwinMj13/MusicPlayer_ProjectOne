@@ -49,8 +49,8 @@ stopSong(){
 }
 
 
-playSong(String? uri,index){
-  playIndex=index;
+playSong(String? uri){
+//  playIndex=index;
   print("IsPlaying OUTSIDE   ${getPlayingStatus()}");
   if(getPlayingStatus()!=true) {
     try {

@@ -7,6 +7,7 @@ import 'package:music_player_project_one/screens/all_songs.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../contentWidget/create_playlist_home_page.dart';
 import '../hive_db/db_albums.dart';
 import '../hive_db/db_functions.dart';
 import '../modal_class/songList.dart';
@@ -28,6 +29,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
   var clickedfiles = false;
   late BuildContext mainContext;
   var playlistAddFloating = true;
+  ValueNotifier<bool> addFloatNotifier=ValueNotifier(false);
   List<Tab> tabs = <Tab>[
     const Tab(
       text: "Albums",
@@ -104,79 +106,96 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               if (!tabController.indexIsChanging) {
                 print(tabController.index);
                 if(tabController.index==1){
-                  playlistAddFloating=true;
+               //   playlistAddFloating=true;
+                  addFloatNotifier.value=true;
                 }else{
-                  playlistAddFloating=false;
+               //   playlistAddFloating=false;
+                  addFloatNotifier.value=false;
                 }
               }
             });
-            return Scaffold(
-              backgroundColor: Colors.blueGrey,
-              floatingActionButton: playlistAddFloating
-                  ? FloatingActionButton(
+            return ValueListenableBuilder(
+              valueListenable: addFloatNotifier,
+              builder: (BuildContext context, value, Widget? child) {
+                return Scaffold(
+                  backgroundColor: Colors.blueGrey,
+                  floatingActionButton: value
+                      ? FloatingActionButton(
                       backgroundColor: Colors.white,
-                      onPressed: () {},
+                      onPressed: () {
+                        showDialog(context: context, builder: (ctx){
+                          return ShowDialogToAddPlaylist();
+                        });
+                      },
                       child: const Icon(
                         Icons.add,
                         color: Colors.blueGrey,
                       ))
-                  : null,
-              appBar: AppBar(
-                automaticallyImplyLeading: false,
-                title: const Text("Audio Mix"),
-                actions: <Widget>[
-                  PopupMenuButton(
-                    itemBuilder: (context) {
-                      return [
-                        const PopupMenuItem(value: 1, child: Text("Sync")),
-                      ];
-                    },
-                    onSelected: (value) {
-                      futureSyncMethod();
-                    },
-                  )
-                ],
-              ),
-              body: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                    flex: 1,
-                    //   height: MediaQuery.of(context).size.height * 0.15,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding:
-                              const EdgeInsets.only(left: 30.0, right: 30.0),
-                          child: topRow(),
-                        ),
-                      ],
-                    ),
+                      : null,
+                  appBar: AppBar(
+                    automaticallyImplyLeading: false,
+                    leading: IconButton(
+                        onPressed: (){
+
+                        },
+                        icon: Image.asset("assets/panda.png")),
+                    title: const Text("Audio Mix"),
+                    actions: <Widget>[
+                      PopupMenuButton(
+                        itemBuilder: (context) {
+                          return [
+                            const PopupMenuItem(value: 1, child: Text("Sync")),
+                          ];
+                        },
+                        onSelected: (value) {
+                          futureSyncMethod();
+                        },
+                      )
+                    ],
                   ),
-                  Expanded(
-                    flex: 4,
-                    child: Column(
-                      children: [
-                        TabBar(
-                            isScrollable: false,
-                            indicatorColor: Colors.white,
-                            labelPadding:
-                                const EdgeInsets.symmetric(horizontal: 30),
-                            tabs: tabs),
-                        const Expanded(
-                          child: TabBarView(children: [
-                            AlbumList(),
-                            //   albumListView(),
-                            //    playListView();,
-                            PlayNameWidget(),
-                          ]),
+                  body: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        //   height: MediaQuery.of(context).size.height * 0.15,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Padding(
+                              padding:
+                              const EdgeInsets.only(left: 30.0, right: 30.0),
+                              child: topRow(),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
+                      ),
+                      Expanded(
+                        flex: 4,
+                        child: Column(
+                          children: [
+                            TabBar(
+                                isScrollable: false,
+                                indicatorColor: Colors.white,
+                                labelPadding:
+                                const EdgeInsets.symmetric(horizontal: 30),
+                                tabs: tabs),
+                            const Expanded(
+                              child: TabBarView(children: [
+                                AlbumList(),
+                                //   albumListView(),
+                                //    playListView();,
+                                PlayNameWidget(),
+                              ]),
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  ),
+                );
+              },
+
             );
 
           })),
@@ -258,15 +277,24 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
           ),
           height: 80,
           width: 80,
-          child: const Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.queue_music, color: Colors.white, size: 30),
-              SizedBox(
-                height: 10,
-              ),
-              Text("Recent", style: TextStyle(color: Colors.white)),
-            ],
+          child:  InkWell(
+            onTap: (){
+              Navigator.of(context).push(MaterialPageRoute(builder: (ctx){
+                return const AllSongsScreen(
+                    fromPageName: "recent",
+                    title: "Recent");
+              }));
+            },
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.queue_music, color: Colors.white, size: 30),
+                SizedBox(
+                  height: 10,
+                ),
+                Text("Recent", style: TextStyle(color: Colors.white)),
+              ],
+            ),
           ),
         )
       ],

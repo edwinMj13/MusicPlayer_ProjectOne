@@ -117,13 +117,14 @@ class _ShowDialogState extends State<ShowDialogAdd> {
   }
 
   Widget secondSection() {
-    return Column(children: [
+    return
+      Column(children: [
        Container(
            padding: const EdgeInsets.all(10.0),
            decoration: BoxDecoration(
            borderRadius: BorderRadius.circular(10.0),
          ),
-           child:   Container(
+           child: Container(
              decoration: BoxDecoration(
                borderRadius: BorderRadius.circular(10.0),
                color: Colors.white,

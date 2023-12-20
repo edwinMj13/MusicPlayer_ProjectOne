@@ -5,6 +5,7 @@ import 'package:music_player_project_one/modal_class/songList.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 import '../contentWidget/edit_dialog_widget.dart';
+import '../hive_db/db_recent_list.dart';
 import 'musicplayer_screen.dart';
 import '../hive_db/db_favorite_list.dart';
 import '../hive_db/db_playlist.dart';
@@ -69,14 +70,13 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
     } else if (fromPageName == "favorite") {
       return getFavoritesList();
     } else if (fromPageName == "recent") {
-      return recentSection();
+      return getRecentData();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     selectGETsection();
-
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -256,7 +256,29 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
     });
   }
 
-  popupForFavorites(List<ModalClassAllSongs> value, int index) {}
+  popupForFavorites(List<ModalClassAllSongs> value, int index) {
+    return PopupMenuButton<int>(itemBuilder: (ctx){
+      return [ const PopupMenuItem(
+        value: 1,
+          child: Text("Remove from favorites")),];
+    },
+    onSelected: (val){
+      if(val==1){
+        ModalClassAllSongs modalC = ModalClassAllSongs(
+            uri: value[index].uri,
+            songId: value[index].songId,
+            allSongsId: value[index].allSongsId,
+            playListName: value[index].playListName,
+            playListStatus: value[index].playListStatus,
+            artist: value[index].artist,
+            title: value[index].title,
+            display_name: value[index].display_name,
+            album: value[index].album,
+            id: value[index].id);
+        removeFromFavorites(index, value[index].allSongsId, modalC);
+      }
+    },);
+  }
 
   playlistSection() {
     return ValueListenableBuilder(
@@ -298,7 +320,11 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
                         color: Colors.black,
                       )),
                 ),
-                title: Text(selectedPlaylistSongs[index].display_name),
+                title: RichText(
+                    overflow: TextOverflow.ellipsis,
+                    text: TextSpan(text: selectedPlaylistSongs[index].display_name,
+                        style: TextStyle(color: Colors.black,fontSize: 17))
+                ),
                 subtitle: Text("${selectedPlaylistSongs[index].artist}"),
                 trailing: popupForPlaylist(selectedPlaylistSongs, index,
                     selectedPlaylistSongs[index].allSongsId),
@@ -353,7 +379,11 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
                         color: Colors.black,
                       )),
                 ),
-                title: Text(value[index].display_name),
+                title: RichText(overflow: TextOverflow.ellipsis,
+                    text: TextSpan(
+                        text: value[index].display_name,
+                        style: TextStyle(color: Colors.black,fontSize: 17))
+                ),
                 subtitle: Text("${value[index].artist}"),
                 trailing: popupForAllSongs(value, index),
                 onTap: () {
@@ -409,7 +439,11 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
                         color: Colors.black,
                       )),
                 ),
-                title: Text(selectedAlbumSongs[index].display_name),
+                title: RichText(
+                    overflow: TextOverflow.ellipsis,
+                    text: TextSpan(text: selectedAlbumSongs[index].display_name,
+                    style: TextStyle(color: Colors.black,fontSize: 17))
+                ),
                 subtitle: Text("${selectedAlbumSongs[index].artist}"),
                 //      trailing: whichWidget(selectedAlbumSongs,index),
                 onTap: () {
@@ -459,7 +493,12 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
                         color: Colors.black,
                       )),
                 ),
-                title: Text(value[index].display_name),
+                title:
+                    RichText(overflow: TextOverflow.ellipsis,
+                        text: TextSpan(
+                            text: value[index].display_name,
+                            style: TextStyle(color: Colors.black,fontSize: 17))
+                    ),
                 subtitle: Text("${value[index].artist}"),
                 trailing: popupForFavorites(value, index),
                 onTap: () {
@@ -480,7 +519,7 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
 
   recentSection() {
     return ValueListenableBuilder(
-      valueListenable: db_AllSongsNotifier,
+      valueListenable: recentNotifier,
       builder: (context, value, child) {
         if (value.isEmpty) {
           return const Center(
@@ -488,14 +527,7 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
           );
         } else {
           print(" ELSE if $value");
-          if (title == 'recent') {
-            selectedAlbumSongs.clear();
-            for (var value1 in value) {
-              if (albumName == value1.album) {
-                selectedAlbumSongs.add(value1);
-              }
-            }
-          }
+
           return ListView.separated(
             itemBuilder: (context, index) {
               // var snapshot = value[index];
@@ -512,17 +544,21 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
                         color: Colors.black,
                       )),
                 ),
-                title: Text(value[index].display_name),
+                title: RichText(overflow: TextOverflow.ellipsis,
+                    text: TextSpan(
+                        text: value[index].display_name,
+                        style: const TextStyle(color: Colors.black,fontSize: 17))
+                ),
                 subtitle: Text("${value[index].artist}"),
                 //   trailing: whichWidget(value,index),
                 onTap: () {
                   playerScreen(
-                      selectedAlbumSongs[index].uri!,
+                      value[index].uri!,
                       index,
-                      selectedAlbumSongs,
-                      selectedAlbumSongs[index].id,
-                      selectedAlbumSongs[index].display_name,
-                      selectedAlbumSongs[index].artist!);
+                      value,
+                      value[index].id,
+                      value[index].display_name,
+                      value[index].artist!);
                 },
               );
             },

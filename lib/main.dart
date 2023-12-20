@@ -64,13 +64,13 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     openBoxes();
     Future.delayed(const Duration(seconds: 3), ()  {
+      userStatus=boxSignup.get("userStatus");
       getValues(context);
     });
   }
 
   void openBoxes()async{
     boxSignup = await Hive.openBox("signup");
-    userStatus=boxSignup.get("userStatus");
     await Hive.openBox<ModalClassAllSongs>("allSongs2");
     await Hive.openBox("SongLength");
     await Hive.openBox<List<String>>("albumNames");
@@ -78,6 +78,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Hive.openBox<PlayListName>("playlistNames");
     await Hive.openBox<ModalClassAllSongs>("favorites");
     await Hive.openBox("playing");
+    await Hive.openBox<ModalClassAllSongs>("recent");
   }
   @override
   Widget build(BuildContext context) {

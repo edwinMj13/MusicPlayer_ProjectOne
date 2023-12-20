@@ -30,3 +30,12 @@ getFavoritesList(){
   print("favorites DbFunction List${favoriteListDb.values}");
   favoritesNotifier.notifyListeners();
 }
+
+removeFromFavorites(int index, int? allSongsId, ModalClassAllSongs modalC){
+  print("removeFromFavorites \n"
+      "songId $index\n"
+      "allSongId $allSongsId");
+  final favoriteListDb=Hive.box<ModalClassAllSongs>("favorites");
+favoriteListDb.deleteAt(index);
+getFavoritesList();
+}

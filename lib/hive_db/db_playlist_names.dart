@@ -12,6 +12,7 @@ addPLaylistNAmes(PlayListName val) async {
   if(name!=null){
     nameDb.put(id, name);
   }
+  getPlayNAMES();
 }
 
 getPlayNAMES(){
@@ -20,4 +21,12 @@ getPlayNAMES(){
   playListNamesNotifier.value.addAll(nameDb.values);
   print("getPlayNAMES ${nameDb.values}");
   playListNamesNotifier.notifyListeners();
+}
+
+List<PlayListName> getRETURNPlayNAMES(){
+  List<PlayListName> listValues=[];
+  final nameDb= Hive.box<PlayListName>("playlistNames");
+  listValues.clear();
+  listValues.addAll(nameDb.values);
+  return listValues;
 }
