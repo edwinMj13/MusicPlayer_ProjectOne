@@ -31,6 +31,7 @@ getNameCheck(){
   print("Names Recent $names");
   return names;
 }
+
 removeLastSong(){
   final db_recent=Hive.box<ModalClassAllSongs>("recent");
   db_recent.deleteAt(0);

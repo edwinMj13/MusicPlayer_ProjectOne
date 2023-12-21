@@ -42,7 +42,7 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
   bool? isLayoutVisible;
   String? artistName;
   PlayerControllers playerControllers = PlayerControllers();
-  ValueNotifier<Duration> valueNotifierDuration=ValueNotifier(Duration.zero);
+  ValueNotifier<List<ModalClassAllSongs>> valueNotifierImage=ValueNotifier([]);
 
   @override
   void dispose() {
@@ -121,6 +121,7 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
             BoxConstraints(minHeight: heightSheet, maxHeight: heightSheet),
         decoration: const BoxDecoration(color: Colors.blueGrey),
         child: Column(children: [
+
           Expanded(
               child: Padding(
             padding: const EdgeInsets.only(top: 10.0, right: 10.0),
@@ -133,12 +134,10 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                     playerControllers.audioPlayer.duration ?? Duration.zero;
      //           print("currentPosition   $currentPosition");
      //           print("totalDuration   $totalDuration");
-
-                //    int currentIndex=index-1;
-
+           //     valueNotifierImage.value.addAll(songList);
                 return Column(
                   children: [
-                    const SizedBox(
+                    SizedBox(
                       height: 20,
                     ),
                     Text(
@@ -166,7 +165,7 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                             minHeight: 300,
                             minWidth: 300),
                         child: QueryArtworkWidget(
-                            id: image(),
+                            id: songList[currentIndex].id,
                             type: ArtworkType.AUDIO,
                             artworkHeight: 300,
                             artworkWidth: 300,
@@ -210,12 +209,14 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                           ),
                         ),
                         const SizedBox(
-                          height: 30,
+                          height: 50,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
+                                height:60,
+                                width:60,
                                 decoration: BoxDecoration(
                                   color: Colors.grey[100],
                                   borderRadius: BorderRadius.circular(100.0),
@@ -235,12 +236,14 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
 
                                     },
                                     icon: const Icon(
-                                      Icons.skip_previous,
+                                      Icons.skip_previous,size: 35,
                                     ))),
                             const SizedBox(
-                              width: 30,
+                              width: 60,
                             ),
                             Container(
+                                height:60,
+                                width:60,
                                 decoration: BoxDecoration(
                                   color: Colors.grey[100],
                                   borderRadius: BorderRadius.circular(100.0),
@@ -258,11 +261,13 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                                     icon: Icon(getPlayingStatus() &&
                                             currentPosition < totalDuration
                                         ? Icons.pause
-                                        : Icons.play_arrow))),
+                                        : Icons.play_arrow,size: 35,))),
                             const SizedBox(
-                              width: 30,
+                              width: 60,
                             ),
                             Container(
+                              height:60,
+                                width:60,
                                 decoration: BoxDecoration(
                                   color: Colors.grey[100],
                                   borderRadius: BorderRadius.circular(100.0),
@@ -270,7 +275,7 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                                 child: IconButton(
                                     onPressed: () {
                                       if (currentIndex == songList.length-1) {
-                                        currentIndex = index;
+                                        currentIndex = songList.length-1;
                                         playerControllers.scaffoldMessage(context, "Last Song");
                                       } else if (currentIndex < songList.length-1) {
                                         currentIndex++;
@@ -282,9 +287,61 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                                       print(
                                           "currentIndex NEXT    $currentIndex");
                                     },
-                                    icon: const Icon(Icons.skip_next))),
+                                    icon: const Icon(Icons.skip_next,size: 35,))),
                           ],
-                        )
+                        ),
+                        SizedBox(height: 40,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                          Container(
+                              height:60,
+                              width:60,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[100],
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
+                              child: IconButton(
+                                  onPressed: () {
+                                    if (currentIndex == songList.length-1) {
+                                      currentIndex = songList.length-1;
+                                      playerControllers.scaffoldMessage(context, "Last Song");
+                                    } else if (currentIndex < songList.length-1) {
+                                      currentIndex++;
+                                      playerControllers.stopSong();
+                                      putPlayingStatus(false);
+                                      playWithDelay(songList[currentIndex].uri, currentIndex);
+                                    }
+
+                                    print(
+                                        "currentIndex NEXT    $currentIndex");
+                                  },
+                                  icon: const Icon(Icons.favorite_border,size: 35,))),
+                          SizedBox(width:60),
+                          Container(
+                              height:60,
+                              width:60,
+                              decoration: BoxDecoration(
+                                color: Colors.grey[100],
+                                borderRadius: BorderRadius.circular(100.0),
+                              ),
+                              child: IconButton(
+                                  onPressed: () {
+                                    if (currentIndex == songList.length-1) {
+                                      currentIndex = songList.length-1;
+                                      playerControllers.scaffoldMessage(context, "Last Song");
+                                    } else if (currentIndex < songList.length-1) {
+                                      currentIndex++;
+                                      playerControllers.stopSong();
+                                      putPlayingStatus(false);
+                                      playWithDelay(songList[currentIndex].uri, currentIndex);
+                                    }
+
+                                    print(
+                                        "currentIndex NEXT    $currentIndex");
+                                  },
+                                  icon: const Icon(Icons.shuffle,size: 35,)))
+                        ],)
                       ],
                     ),
                   ],

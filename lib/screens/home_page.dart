@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:music_player_project_one/contentWidget/albumfile.dart';
 import 'package:music_player_project_one/contentWidget/playlistfile.dart';
+import 'package:music_player_project_one/screens/profile_screen.dart';
 import 'package:music_player_project_one/utils/controllers.dart';
 import 'package:music_player_project_one/screens/all_songs.dart';
 import 'package:on_audio_query/on_audio_query.dart';
@@ -136,7 +137,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     automaticallyImplyLeading: false,
                     leading: IconButton(
                         onPressed: (){
-
+                          Navigator.of(context).push(MaterialPageRoute(builder: (ctx){
+                            return ProfileScreen();
+                          }));
                         },
                         icon: Image.asset("assets/panda.png")),
                     title: const Text("Audio Mix"),
