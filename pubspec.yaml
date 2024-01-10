@@ -42,8 +42,6 @@ dependencies:
   on_audio_query: ^2.9.0
   just_audio: ^0.9.36
   permission_handler: ^11.0.1
-  audio_video_progress_bar: ^2.0.1
-  audioplayers: 1.1.0
 
 dev_dependencies:
   flutter_test:

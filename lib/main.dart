@@ -10,7 +10,7 @@ import 'package:music_player_project_one/screens/home_page.dart';
 
 import 'modal_class/playlistnames.dart';
 
-Future<void> main() async {
+ main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   if(!Hive.isAdapterRegistered(DbModalClassAdapter().typeId)) {
@@ -63,14 +63,10 @@ class _SplashScreenState extends State<SplashScreen> {
     // TODO: implement initState
     super.initState();
     openBoxes();
-    Future.delayed(const Duration(seconds: 3), ()  {
-      userStatus=boxSignup.get("userStatus");
-      getValues(context);
-    });
   }
-
   void openBoxes()async{
     boxSignup = await Hive.openBox("signup");
+    userStatus=boxSignup.get("userStatus");
     await Hive.openBox<ModalClassAllSongs>("allSongs2");
     await Hive.openBox("SongLength");
     await Hive.openBox<List<String>>("albumNames");
@@ -79,6 +75,7 @@ class _SplashScreenState extends State<SplashScreen> {
     await Hive.openBox<ModalClassAllSongs>("favorites");
     await Hive.openBox("playing");
     await Hive.openBox<ModalClassAllSongs>("recent");
+    getValues(context);
   }
   @override
   Widget build(BuildContext context) {

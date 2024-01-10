@@ -1,25 +1,8 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.music_player_project_one.app-mergeDebugResources-16:/values-sk/values-sk.xml",
+            "outputFile": "com.example.music_player_project_one.app-mergeDebugResources-15:/values-sk/values-sk.xml",
             "map": [
-                {
-                    "source": "C:\\Users\\user\\.gradle\\caches\\transforms-3\\c2aff38445ebad8ddeaa989ecf50f56e\\transformed\\core-1.9.0\\res\\values-sk\\values-sk.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "100",
-                        "endOffsets": "151"
-                    },
-                    "to": {
-                        "startLines": "16",
-                        "startColumns": "4",
-                        "startOffsets": "1303",
-                        "endColumns": "100",
-                        "endOffsets": "1399"
-                    }
-                },
                 {
                     "source": "C:\\Users\\user\\.gradle\\caches\\transforms-3\\1c11fcd5d741b7583794ec56efdeaa69\\transformed\\jetified-media2-session-1.2.1\\res\\values-sk\\values-sk.xml",
                     "from": {
@@ -52,6 +35,23 @@
                         "startOffsets": "159,236,298,362,433,510,584,668,750",
                         "endColumns": "76,61,63,70,76,73,83,81,79",
                         "endOffsets": "231,293,357,428,505,579,663,745,825"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\user\\.gradle\\caches\\transforms-3\\57d13c65eae90a7945dea98c1aa2b720\\transformed\\core-1.7.0\\res\\values-sk\\values-sk.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "16",
+                        "startColumns": "4",
+                        "startOffsets": "1303",
+                        "endColumns": "100",
+                        "endOffsets": "1399"
                     }
                 }
             ]

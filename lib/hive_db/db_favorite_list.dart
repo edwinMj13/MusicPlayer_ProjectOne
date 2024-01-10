@@ -1,8 +1,11 @@
 
+import 'package:flutter/cupertino.dart';
 import 'package:hive_flutter/adapters.dart';
 
 import '../modal_class/songList.dart';
 import 'db_functions.dart';
+
+ValueNotifier<bool> isFavNotifier=ValueNotifier(false);
 
 addToFavorites(ModalClassAllSongs modal, int songId)  async {
   final favoritesDb=  Hive.box<ModalClassAllSongs>("favorites");
@@ -31,11 +34,29 @@ getFavoritesList(){
   favoritesNotifier.notifyListeners();
 }
 
-removeFromFavorites(int index, int? allSongsId, ModalClassAllSongs modalC){
+removeFromFavorites(int index, int? allSongsId){
   print("removeFromFavorites \n"
       "songId $index\n"
       "allSongId $allSongsId");
   final favoriteListDb=Hive.box<ModalClassAllSongs>("favorites");
 favoriteListDb.deleteAt(index);
 getFavoritesList();
+}
+
+isFavorite(String display_name){
+  List<String> nameList=[];
+  final favoriteListDb=Hive.box<ModalClassAllSongs>("favorites");
+  favoritesNotifier.value.clear();
+  nameList.clear();
+  favoriteListDb.values.forEach((element) {
+    nameList.add(element.display_name);
+  });
+  if(nameList.contains(display_name)){
+    isFavNotifier.value=true;
+  }else{
+    isFavNotifier.value=false;
+  }
+  favoritesNotifier.value.addAll(favoriteListDb.values);
+
+  print("favorites DbFunction List${favoriteListDb.values}");
 }

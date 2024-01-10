@@ -37,7 +37,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     ),
     const Tab(
       text: "Playlists",
-    )
+    ),
   ];
 
   //late TabController tabController;
@@ -183,9 +183,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                                 labelPadding:
                                 const EdgeInsets.symmetric(horizontal: 30),
                                 tabs: tabs),
-                            const Expanded(
+                             Expanded(
                               child: TabBarView(children: [
-                                AlbumList(),
+                                const AlbumList(),
                                 //   albumListView(),
                                 //    playListView();,
                                 PlayNameWidget(),

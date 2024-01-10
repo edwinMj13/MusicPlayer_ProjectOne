@@ -1,12 +1,12 @@
 
+
 import 'package:flutter/material.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:music_player_project_one/hive_db/db_functions.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
+import '../modal_class/songList.dart';
 class PlayerControllers{
-
-
 final audioQuery=OnAudioQuery();
 final audioPlayer=AudioPlayer();
 var isPlaying=false;
@@ -14,10 +14,11 @@ int playIndex=0;
 var totalDura=0.0;
 var position='';
 var currentPosition=0.0;
-
+List<ModalClassAllSongs> songList=[];
 
 
 updatePosition(){
+
     audioPlayer.positionStream.listen((d) {
 
     //  duration = d.toString().split(".")[0];
@@ -49,13 +50,15 @@ stopSong(){
 }
 
 
-playSong(String? uri){
-//  playIndex=index;
+playSong(String? uri, List<ModalClassAllSongs> songList, int index) async {
+
   print("IsPlaying OUTSIDE   ${getPlayingStatus()}");
   if(getPlayingStatus()!=true) {
     try {
-      audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(uri!)));
+      print("Play URI   $uri");
+     await audioPlayer.setAudioSource(AudioSource.uri(Uri.parse(songList[index].uri!)));
       audioPlayer.play();
+      audioPlayer.shuffle();
       isPlaying = true;
       putPlayingStatus(true);
     } on Exception catch (e) {
@@ -64,10 +67,27 @@ playSong(String? uri){
   }
 }
 
+playSongconCat(String? uri, ConcatenatingAudioSource playlist, int index) async {
+ // playlist.children.toSet();
+  print(" Concateneting playlist -- ${playlist.children}");
+
+  print("IsPlaying OUTSIDE   ${getPlayingStatus()}");
+  if(getPlayingStatus()!=true) {
+    try {
+      print("Play URI   $uri");
+      await audioPlayer.setAudioSource(playlist);
+      await audioPlayer.play();
+      isPlaying = true;
+      putPlayingStatus(true);
+    }  catch (excep) {
+      print("Error on Try Catch Concatenation WHile Playing${excep.toString()}");
+    }
+  }
+}
 pauseSong(){
   if(getPlayingStatus()!=false) {
     try {
-      audioPlayer.pause();
+      audioPlayer.stop();
       putPlayingStatus(false);
     } on Exception catch (e) {
       print(e.toString());

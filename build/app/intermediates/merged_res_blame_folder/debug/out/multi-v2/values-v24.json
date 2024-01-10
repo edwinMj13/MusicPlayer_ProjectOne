@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.music_player_project_one.app-mergeDebugResources-16:/values-v24/values-v24.xml",
+            "outputFile": "com.example.music_player_project_one.app-mergeDebugResources-15:/values-v24/values-v24.xml",
             "map": [
                 {
                     "source": "C:\\Users\\user\\.gradle\\caches\\transforms-3\\33aeac6041f7f32f65addefb234a1ba0\\transformed\\media-1.4.1\\res\\values-v24\\values-v24.xml",

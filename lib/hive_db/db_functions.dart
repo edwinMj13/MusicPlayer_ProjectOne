@@ -2,15 +2,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:music_player_project_one/modal_class/songList.dart';
+import 'package:music_player_project_one/utils/controllers.dart';
 
 import '../modal_class/playlistnames.dart';
-
+PlayerControllers playerControllers=PlayerControllers();
 
 ValueNotifier<List<String>> db_Notifier=ValueNotifier([]);
 ValueNotifier<List<ModalClassAllSongs>> db_AllSongsNotifier=ValueNotifier([]);
 ValueNotifier<List<ModalClassAllSongs>> playListNotifier=ValueNotifier([]);
 ValueNotifier<List<ModalClassAllSongs>> favoritesNotifier=ValueNotifier([]);
-ValueNotifier<List<PlayListName>> playListNamesNotifier=ValueNotifier([]);
 
 
  addAllSongs(ModalClassAllSongs modalClassAllSongs) async {
@@ -28,7 +28,7 @@ print("Before  ${modalClassAllSongs.songId}");
   putLength(allsongDb.values.length);
 }
 
-getAllSongs() async {
+getAllSongs()  {
   final allsongDb= Hive.box<ModalClassAllSongs>("allSongs2");
   db_AllSongsNotifier.value.clear();
   db_AllSongsNotifier.value.addAll(allsongDb.values);
@@ -102,6 +102,7 @@ clearAllSongsBox(String boxName)async{
 putPlayingStatus(bool stat){
   final opClDb= Hive.box("playing");
     opClDb.put("status",stat);
+
 }
 
  getPlayingStatus(){

@@ -8,6 +8,7 @@
         android:label="Audio Mix"
         android:name="${applicationName}"
         android:requestLegacyExternalStorage="true"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

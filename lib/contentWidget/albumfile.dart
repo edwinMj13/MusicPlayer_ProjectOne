@@ -25,7 +25,6 @@ class AlbumList extends StatelessWidget {
             );
           } else {
             return GridView.builder(
-              padding: const EdgeInsets.only(top: 20.0),
               itemCount: value.length,
               gridDelegate:
               const SliverGridDelegateWithFixedCrossAxisCount(
@@ -46,7 +45,7 @@ class AlbumList extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(0.0),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         SvgPicture.asset(

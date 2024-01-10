@@ -23,23 +23,31 @@ addToPlaylist(ModalClassAllSongs modal, int songId) async {
   }
 }
 
-removeFromPlaylist(int id, int? allSongsId, ModalClassAllSongs modalC) async {
+removeFromPlaylist(int id, int? allSongsId) async {
   final playListDb=Hive.box<ModalClassAllSongs>("playlist");
-  playListDb.delete(id);
-  print("playListDb.delete(id) ${allSongsId}");
-
-  final allsongDb=Hive.box<ModalClassAllSongs>("allSongs2");
-  final updateAllsong=allsongDb.get(allSongsId!);
-  if(updateAllsong!=null) {
-    allsongDb.put(allSongsId,modalC);
-  }
+  playListDb.deleteAt(id);
   getPlayList();
 }
 
-getPlayList() async {
+getReturnPlaylist(){
   final playListDb=Hive.box<ModalClassAllSongs>("playlist");
+  List<ModalClassAllSongs> allSongssss=[];
+  allSongssss.addAll(playListDb.values);
+  return allSongssss;
+}
+
+getPlayList()  async {
+  final playListDb=Hive.box<ModalClassAllSongs>("playlist");
+  //await playListDb.deleteAll(playListDb.keys);
   playListNotifier.value.clear();
   playListNotifier.value.addAll(playListDb.values);
   print("playList Songs ${playListDb.values}");
   playListNotifier.notifyListeners();
+}
+
+delAllWhenDelAPlaylist(List<int> indexes){
+  final playListDb=Hive.box<ModalClassAllSongs>("playlist");
+  for(int i=0;i<indexes.length;i++){
+    playListDb.deleteAt(indexes[i]);
+  }
 }

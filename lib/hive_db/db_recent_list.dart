@@ -20,7 +20,11 @@ addRecentData(ModalClassAllSongs modal) async {
 getRecentData(){
   final db_recent=Hive.box<ModalClassAllSongs>("recent");
   recentNotifier.value.clear();
-  recentNotifier.value.addAll(db_recent.values);
+  List<ModalClassAllSongs> recentSongs=[];
+  List<ModalClassAllSongs> recentSongs_TWO=[];
+  recentSongs.addAll(db_recent.values);
+  recentSongs_TWO.addAll(recentSongs.reversed.toList());
+  recentNotifier.value.addAll(recentSongs_TWO);
   recentNotifier.notifyListeners();
 }
 
@@ -35,5 +39,10 @@ getNameCheck(){
 removeLastSong(){
   final db_recent=Hive.box<ModalClassAllSongs>("recent");
   db_recent.deleteAt(0);
+  getRecentData();
+}
+deleteSong(int? id){
+  final db_recent=Hive.box<ModalClassAllSongs>("recent");
+  db_recent.delete(id);
   getRecentData();
 }

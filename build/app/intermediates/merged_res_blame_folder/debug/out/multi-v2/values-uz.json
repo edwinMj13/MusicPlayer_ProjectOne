@@ -1,25 +1,8 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.music_player_project_one.app-mergeDebugResources-16:/values-uz/values-uz.xml",
+            "outputFile": "com.example.music_player_project_one.app-mergeDebugResources-15:/values-uz/values-uz.xml",
             "map": [
-                {
-                    "source": "C:\\Users\\user\\.gradle\\caches\\transforms-3\\c2aff38445ebad8ddeaa989ecf50f56e\\transformed\\core-1.9.0\\res\\values-uz\\values-uz.xml",
-                    "from": {
-                        "startLines": "2",
-                        "startColumns": "4",
-                        "startOffsets": "55",
-                        "endColumns": "100",
-                        "endOffsets": "151"
-                    },
-                    "to": {
-                        "startLines": "16",
-                        "startColumns": "4",
-                        "startOffsets": "1300",
-                        "endColumns": "100",
-                        "endOffsets": "1396"
-                    }
-                },
                 {
                     "source": "C:\\Users\\user\\.gradle\\caches\\transforms-3\\e255c6ce9910a673f2619b479a7d74a8\\transformed\\jetified-exoplayer-core-2.18.7\\res\\values-uz\\values-uz.xml",
                     "from": {
@@ -35,6 +18,23 @@
                         "startOffsets": "163,228,294,364,428,507,575,677,771",
                         "endColumns": "64,65,69,63,78,67,101,93,79",
                         "endOffsets": "223,289,359,423,502,570,672,766,846"
+                    }
+                },
+                {
+                    "source": "C:\\Users\\user\\.gradle\\caches\\transforms-3\\57d13c65eae90a7945dea98c1aa2b720\\transformed\\core-1.7.0\\res\\values-uz\\values-uz.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "100",
+                        "endOffsets": "151"
+                    },
+                    "to": {
+                        "startLines": "16",
+                        "startColumns": "4",
+                        "startOffsets": "1300",
+                        "endColumns": "100",
+                        "endOffsets": "1396"
                     }
                 },
                 {

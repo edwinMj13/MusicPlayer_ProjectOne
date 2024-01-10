@@ -27,27 +27,54 @@ class _ProfileScreenState extends State<ProfileScreen> {
       backgroundColor: Colors.blueGrey,
       body: SafeArea(
         child: Center(
-          child: Container(
-            height: 300,
-            width: 300,
-            decoration: BoxDecoration(
-              color: Colors.white,
-                  borderRadius: BorderRadius.circular(10.0),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CircleAvatar(
-                  radius: 50,
-                  child: Image.asset("assets/panda.png"),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Expanded(
+                  flex:1,
+                  child: Text("")),
+              Expanded(
+                flex: 1,
+                child: Container(
+                  height: 300,
+                  width: 300,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                        borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircleAvatar(
+                        radius: 50,
+                        child: Image.asset("assets/panda.png"),
+                      ),
+                      SizedBox(height: 50,),
+                      Text(name!,style: TextStyle(fontSize: 20),),
+                      SizedBox(height: 20,),
+                      Text(phno!,style: TextStyle(fontSize: 20),)
+                    ],
+                  ),
                 ),
-                SizedBox(height: 50,),
-                Text(name!,style: TextStyle(fontSize: 20),),
-                SizedBox(height: 20,),
-                Text(phno!,style: TextStyle(fontSize: 20),)
-              ],
-            ),
+              ),
+              const Expanded(
+                flex: 1,
+                child:  Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Column(
+                    children: [
+                      Expanded(child: Text("")),
+                      Expanded(child: Text("")),
+                      Expanded(child: Column(children: [
+                        Text("About",style: TextStyle(color: Colors.white),),
+                        Text("Terms & Conditions",style: TextStyle(color: Colors.white),),
+                        Text("Version 0.1",style: TextStyle(color: Colors.white),)
+                      ],))
+                  ],),
+                ),
+              )
+            ],
           ),
         ),
       ),

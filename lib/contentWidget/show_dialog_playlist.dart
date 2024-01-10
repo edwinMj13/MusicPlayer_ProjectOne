@@ -10,7 +10,8 @@ import '../modal_class/playlistnames.dart';
 class ShowDialogAdd extends StatefulWidget {
   final ModalClassAllSongs playListNameModal;
   final int songId;
-   const ShowDialogAdd(  {super.key, required this.playListNameModal, required this.songId});
+  final VoidCallback setCallback;
+   const ShowDialogAdd(  {super.key, required this.playListNameModal, required this.songId,required this.setCallback});
 
   @override
   State<ShowDialogAdd> createState() => _ShowDialogState();
@@ -24,20 +25,21 @@ class _ShowDialogState extends State<ShowDialogAdd> {
   bool issecondVisible=false;
   PlayerControllers playerControllers=PlayerControllers();
   List<String> playNames=[];
-
+  late final VoidCallback setCallback;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     playListNameModal=widget.playListNameModal;
     songId=widget.songId;
+    setCallback=widget.setCallback;
   }
   @override
   Widget build(BuildContext context) {
     try {
       getPlayNAMES();
     }on  Exception catch  (e){
-      print(e);
+      print("Exception getPlayNAMES()  $e");
     }
     return Dialog(
       elevation: 5,
@@ -83,14 +85,13 @@ class _ShowDialogState extends State<ShowDialogAdd> {
                   //    print("firstSection BuilderValue $playNames");
                       playNames.clear();
                       playNames=value.map((e) => e.namess).toList();
-                        return GestureDetector(
+                        return InkWell(
                           onTap: (){
                             playListNameModal.playListName=playNames[index];
                             playListNameModal.playListStatus='yes';
                             addToPlaylist(playListNameModal,songId);
-                            setState(() {
-
-                            });
+                            Navigator.pop(context);
+                            setCallback();
                           },
                             child: Text(itemData.namess,style: const TextStyle(fontSize: 19,color: Colors.blueGrey),));
                       },
@@ -108,10 +109,11 @@ class _ShowDialogState extends State<ShowDialogAdd> {
           backgroundColor: Colors.white,
         ),
           onPressed: (){
-        setState(() {
-          isfirstVisible=false;
-          issecondVisible=true;
-        });
+          setState(() {
+            isfirstVisible=false;
+            issecondVisible=true;
+          });
+
       }, child: const Text("Create Playlist",style: TextStyle(color: Colors.blueGrey),)),
     ],);
   }

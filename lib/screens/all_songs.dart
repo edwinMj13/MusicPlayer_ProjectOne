@@ -5,6 +5,7 @@ import 'package:music_player_project_one/modal_class/songList.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 import '../contentWidget/edit_dialog_widget.dart';
+import '../contentWidget/song_popup_options.dart';
 import '../hive_db/db_recent_list.dart';
 import 'musicplayer_screen.dart';
 import '../hive_db/db_favorite_list.dart';
@@ -30,8 +31,6 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
   List<ModalClassAllSongs> selectedAlbumSongs = [];
   List<ModalClassAllSongs> selectedPlaylistSongs = [];
   late String albumName;
-  List<String> checkPlaylistString = [];
-  List<String> checkFavoriteString = [];
   PlayerControllers playerControllers = PlayerControllers();
   bool searchStatus = false;
   final searchController=TextEditingController();
@@ -123,116 +122,7 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
     );
   }
 
-  toCheckinPlayList() {
-    List<ModalClassAllSongs> checkInPlayList = [];
-
-    final playListDb = Hive.box<ModalClassAllSongs>("playlist");
-    checkInPlayList.clear();
-    for (var elem in playListDb.values) {
-      checkInPlayList.add(elem);
-    }
-    return checkInPlayList.map((e) => e.display_name).toList();
-  }
-
-  toCheckinFavorites() {
-    List<ModalClassAllSongs> checkInfavorites = [];
-
-    final playListDb = Hive.box<ModalClassAllSongs>("favorites");
-    checkInfavorites.clear();
-    for (var elem in playListDb.values) {
-      checkInfavorites.add(elem);
-    }
-    return checkInfavorites.map((e) => e.display_name).toList();
-  }
-
-  popupForAllSongs(List<ModalClassAllSongs> value, int index) {
-    checkPlaylistString = toCheckinPlayList();
-    checkFavoriteString = toCheckinFavorites();
-    ModalClassAllSongs modalC = ModalClassAllSongs(
-        uri: value[index].uri,
-        songId: value[index].songId,
-        allSongsId: value[index].allSongsId,
-        artist: value[index].artist,
-        title: value[index].title,
-        display_name: value[index].display_name,
-        album: value[index].album,
-        id: value[index].id);
-  //  print("modalC.display_name ${modalC.display_name}");
-    return PopupMenuButton<int>(
-      itemBuilder: (ctx) {
-        return [
-          PopupMenuItem(
-              value: 1,
-              child: !checkPlaylistString.contains(modalC.display_name)
-                  ? const Text("Add to playlist")
-                  : const Text(
-                      "Added to playlist",
-                      style: TextStyle(color: Colors.green),
-                    )),
-          PopupMenuItem(
-              value: 2,
-              child: !checkFavoriteString.contains(modalC.display_name)
-                  ? const Text("Add to favorites")
-                  : const Text("Added to favorites",
-                      style: TextStyle(color: Colors.green))),
-          const PopupMenuItem(value: 3, child: Text("Edit")),
-          const PopupMenuItem(value: 4, child: Text("Delete")),
-        ];
-      },
-      onSelected: (val) {
-        switch (val) {
-          case 1:
-            if (!checkPlaylistString.contains(modalC.display_name)) {
-              showDialog(
-                  context: context,
-                  builder: (context) => ShowDialogAdd(
-                      playListNameModal: modalC, songId: value[index].songId!));
-            } else {
-              playerControllers.scaffoldMessage(
-                  context, "Already Added To Playlist");
-            }
-            break;
-          case 2:
-            ModalClassAllSongs modalC = ModalClassAllSongs(
-                uri: value[index].uri,
-                playListName: value[index].playListName,
-                playListStatus: value[index].playListStatus,
-                favoritesListStatus: "yes",
-                songId: value[index].songId,
-                allSongsId: value[index].allSongsId,
-                artist: value[index].artist,
-                title: value[index].title,
-                display_name: value[index].display_name,
-                album: value[index].album,
-                id: value[index].id);
-            addToFavorites(modalC, value[index].songId!);
-            setState(() {});
-            break;
-          case 3:
-            ModalClassAllSongs modalEdit = ModalClassAllSongs(
-                uri: value[index].uri,
-                playListName: value[index].playListName,
-                playListStatus: value[index].playListStatus,
-                songId: value[index].songId,
-                allSongsId: value[index].allSongsId,
-                artist: value[index].artist,
-                title: value[index].title,
-                display_name: value[index].display_name,
-                album: value[index].album,
-                id: value[index].id);
-            showDialog(context: context, builder: (ctx){
-              return ShowEditDialog(modal:modalEdit,indexSong: index);
-            });
-            break;
-          case 4:
-            deleteNode(value[index].songId);
-            break;
-        }
-      },
-    );
-  }
-
-  popupForPlaylist(List<ModalClassAllSongs> value, int index, int? allSongsId) {
+  popupForPlaylist(List<ModalClassAllSongs> value, int? songID, int? allSongsId) {
     print("allSongID  popupForPlaylist  $allSongsId");
     return PopupMenuButton<int>(itemBuilder: (ctx) {
       return [
@@ -240,18 +130,9 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
       ];
     }, onSelected: (val) {
       if (val == 1) {
-        ModalClassAllSongs modalC = ModalClassAllSongs(
-            uri: value[index].uri,
-            songId: value[index].songId,
-            allSongsId: value[index].allSongsId,
-            playListName: "",
-            playListStatus: 'no',
-            artist: value[index].artist,
-            title: value[index].title,
-            display_name: value[index].display_name,
-            album: value[index].album,
-            id: value[index].id);
-        removeFromPlaylist(value[index].songId!, allSongsId, modalC);
+       // playerControllers.scaffoldMessage(context, "msg");
+        print("object");
+        removeFromPlaylist(songID!, allSongsId);
       }
     });
   }
@@ -264,18 +145,8 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
     },
     onSelected: (val){
       if(val==1){
-        ModalClassAllSongs modalC = ModalClassAllSongs(
-            uri: value[index].uri,
-            songId: value[index].songId,
-            allSongsId: value[index].allSongsId,
-            playListName: value[index].playListName,
-            playListStatus: value[index].playListStatus,
-            artist: value[index].artist,
-            title: value[index].title,
-            display_name: value[index].display_name,
-            album: value[index].album,
-            id: value[index].id);
-        removeFromFavorites(index, value[index].allSongsId, modalC);
+
+        removeFromFavorites(index, value[index].allSongsId);
       }
     },);
   }
@@ -290,60 +161,97 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
           );
         } else {
           print(" ELSE if PlayList$value");
+
           if (fromPageName == "playlist") {
             selectedPlaylistSongs.clear();
-            for (var elem in value) {
+            /*for (var elem in value) {
               if (title == elem.playListName) {
                 selectedPlaylistSongs.add(elem);
               }
+            }*/
+            for(int i=0;i<value.length;i++){
+              print("PlayList${value[i].display_name}");
+              if (title == value[i].playListName) {
+                ModalClassAllSongs modalClassAllSongs = ModalClassAllSongs(
+                  songId: i,
+                    playListName: value[i].playListName,
+                    favoritesListStatus: value[i].favoritesListStatus,
+                    playListStatus: value[i].playListStatus,
+                    allSongsId: value[i].allSongsId,
+                    favoriteListName: value[i].favoriteListName,
+                    uri: value[i].uri,
+                    artist: value[i].artist,
+                    title: value[i].title,
+                    display_name: value[i].display_name,
+                    album: value[i].album,
+                    id: value[i].id);
+                selectedPlaylistSongs.add(modalClassAllSongs);
+             //   selectedPlaylistSongs
+              }
             }
           }
-          return ListView.separated(
-            itemBuilder: (context, index) {
-              var snapshot = selectedPlaylistSongs[index];
-              print("Name : ${snapshot.title} \n"
-                  "SongsId :${snapshot.songId}\n"
-                  "AllSongsId :${snapshot.allSongsId}\n"
-                  "playListStatus :${snapshot.playListStatus}\n"
-                  "playListName :${snapshot.playListName}\n");
+          print("selectedPlaylistSongs$selectedPlaylistSongs");
+          if(selectedPlaylistSongs.isEmpty){
+            print("selectedPlaylistSongs.isEmpty$selectedPlaylistSongs");
+            return const Center(child: Text("No Data",style: TextStyle(color: Colors.blueGrey)),);
+          }else if(selectedPlaylistSongs==null){
+            print("selectedPlaylistSongs.isNULL$selectedPlaylistSongs");
+            return const Center(child: Text("No Data",style: TextStyle(color: Colors.blueGrey)),);
+          }else {
+            print("selectedPlaylistSongs HAS DATA $selectedPlaylistSongs");
+            return ListView.separated(
+              itemBuilder: (context, index) {
+                var snapshot = selectedPlaylistSongs[index];
+                print("Playlist \n"
+                    "Name : ${snapshot.title} \n"
+                    "SongsId :${snapshot.songId}\n"
+                    "AllSongsId :${snapshot.allSongsId}\n"
+                    "playListStatus :${snapshot.playListStatus}\n"
+                    "playListName :${snapshot.playListName}\n");
 
-              print("selectedPlaylistSongs    ${selectedPlaylistSongs}");
-              return ListTile(
-                leading: ConstrainedBox(
-                  constraints: const BoxConstraints(
-                      maxHeight: 50, maxWidth: 50, minHeight: 50, minWidth: 50),
-                  child: QueryArtworkWidget(
-                      id: selectedPlaylistSongs[index].id,
-                      type: ArtworkType.AUDIO,
-                      nullArtworkWidget: const Icon(
-                        Icons.music_note,
-                        color: Colors.black,
-                      )),
-                ),
-                title: RichText(
-                    overflow: TextOverflow.ellipsis,
-                    text: TextSpan(text: selectedPlaylistSongs[index].display_name,
-                        style: TextStyle(color: Colors.black,fontSize: 17))
-                ),
-                subtitle: Text("${selectedPlaylistSongs[index].artist}"),
-                trailing: popupForPlaylist(selectedPlaylistSongs, index,
-                    selectedPlaylistSongs[index].allSongsId),
-                onTap: () {
-                  playerScreen(
-                      selectedPlaylistSongs[index].uri!,
-                      index,
-                      selectedPlaylistSongs,
-                      selectedPlaylistSongs[index].id,
-                      selectedPlaylistSongs[index].display_name,
-                      selectedPlaylistSongs[index].artist!);
-                },
-              );
-            },
-            itemCount: selectedPlaylistSongs.length,
-            separatorBuilder: (context, index) {
-              return const Divider();
-            },
-          );
+                print("selectedPlaylistSongs    ${selectedPlaylistSongs}");
+                return ListTile(
+                  leading: ConstrainedBox(
+                    constraints: const BoxConstraints(
+                        maxHeight: 50,
+                        maxWidth: 50,
+                        minHeight: 50,
+                        minWidth: 50),
+                    child: QueryArtworkWidget(
+                        id: selectedPlaylistSongs[index].id,
+                        type: ArtworkType.AUDIO,
+                        nullArtworkWidget: const Icon(
+                          Icons.music_note,
+                          color: Colors.black,
+                        )),
+                  ),
+                  title: RichText(
+                      overflow: TextOverflow.ellipsis,
+                      text: TextSpan(
+                          text: selectedPlaylistSongs[index].display_name,
+                          style: TextStyle(color: Colors.black, fontSize: 17))
+                  ),
+                  subtitle: Text("${selectedPlaylistSongs[index].artist}"),
+                  trailing: popupForPlaylist(selectedPlaylistSongs,
+                      selectedPlaylistSongs[index].songId,
+                      selectedPlaylistSongs[index].allSongsId),
+                  onTap: () {
+                    playerScreen(
+                        selectedPlaylistSongs[index].uri!,
+                        index,
+                        selectedPlaylistSongs,
+                        selectedPlaylistSongs[index].id,
+                        selectedPlaylistSongs[index].display_name,
+                        selectedPlaylistSongs[index].artist!);
+                  },
+                );
+              },
+              itemCount: selectedPlaylistSongs.length,
+              separatorBuilder: (context, index) {
+                return const Divider();
+              },
+            );
+          }
         }
       },
     );
@@ -385,7 +293,7 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
                         style: TextStyle(color: Colors.black,fontSize: 17))
                 ),
                 subtitle: Text("${value[index].artist}"),
-                trailing: popupForAllSongs(value, index),
+                trailing: Popup_Song_Options(value:value, index:index,setCallback:setStateCallback,fromPage:"allsongs"),
                 onTap: () {
                   playerScreen(value[index].uri!, index, value, value[index].id,
                       value[index].display_name, value[index].artist!);
@@ -400,6 +308,19 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
         }
       },
     );
+  }
+
+  void setStateCallback(){
+    //print("QWERTYUIOASDFGHJKLZXCVBNM");
+    setState(() {
+
+    });
+  }
+
+  setStateMethod(){
+    setState(() {
+
+    });
   }
 
   albumSection() {
@@ -530,7 +451,12 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
 
           return ListView.separated(
             itemBuilder: (context, index) {
-              // var snapshot = value[index];
+              var snapshot = value[index];
+              print("Name : ${snapshot.title} \n"
+                  "SongsId :${snapshot.songId}\n"
+                  "AllSongsId :${snapshot.allSongsId}\n"
+                  "playListStatus :${snapshot.playListStatus}\n"
+                  "playListName :${snapshot.playListName}\n");
 
               return ListTile(
                 leading: ConstrainedBox(
@@ -550,7 +476,7 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
                         style: const TextStyle(color: Colors.black,fontSize: 17))
                 ),
                 subtitle: Text("${value[index].artist}"),
-                //   trailing: whichWidget(value,index),
+                   trailing: Popup_Song_Options(value:value, index:index,setCallback:setStateCallback,fromPage:"recent"),
                 onTap: () {
                   playerScreen(
                       value[index].uri!,
@@ -590,6 +516,7 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
         intImage: id,
         songTitle: display_name,
         artistName: artist,
+        setStateMethod: setStateMethod,
       );
     }));
   }

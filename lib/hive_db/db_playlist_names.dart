@@ -1,7 +1,8 @@
+import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 
 import '../modal_class/playlistnames.dart';
-import 'db_functions.dart';
+ValueNotifier<List<PlayListName>> playListNamesNotifier=ValueNotifier([]);
 
 addPLaylistNAmes(PlayListName val) async {
   final nameDb= Hive.box<PlayListName>("playlistNames");
@@ -29,4 +30,15 @@ List<PlayListName> getRETURNPlayNAMES(){
   listValues.clear();
   listValues.addAll(nameDb.values);
   return listValues;
+}
+
+updatePlaylistData(int index,PlayListName name){
+  final nameDb= Hive.box<PlayListName>("playlistNames");
+  nameDb.putAt(index,name);
+  getPlayNAMES();
+}
+deletePlaylistData(int index){
+  final nameDb= Hive.box<PlayListName>("playlistNames");
+  nameDb.deleteAt(index);
+  getPlayNAMES();
 }
