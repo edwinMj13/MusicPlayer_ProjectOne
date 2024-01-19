@@ -52,7 +52,7 @@
 34        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
 34-->[androidx.core:core:1.7.0] C:\Users\user\.gradle\caches\transforms-3\57d13c65eae90a7945dea98c1aa2b720\transformed\core-1.7.0\AndroidManifest.xml:24:18-86
 35        android:debuggable="true"
-36        android:icon="@mipmap/ic_launcher"
+36        android:icon="@mipmap/launcher_icon"
 37        android:label="Audio Mix"
 38        android:requestLegacyExternalStorage="true"
 39        android:usesCleartextTraffic="true" >

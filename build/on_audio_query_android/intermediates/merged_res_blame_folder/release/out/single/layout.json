@@ -1,0 +1,26 @@
+[
+    {
+        "merged": "com.lucasjosino.on_audio_query.on_audio_query_android-merged_res-9:/layout/notification_action_tombstone.xml",
+        "source": "com.lucasjosino.on_audio_query.on_audio_query_android-core-1.6.0-2:/layout/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "com.lucasjosino.on_audio_query.on_audio_query_android-merged_res-9:/layout/custom_dialog.xml",
+        "source": "com.lucasjosino.on_audio_query.on_audio_query_android-core-1.6.0-2:/layout/custom_dialog.xml"
+    },
+    {
+        "merged": "com.lucasjosino.on_audio_query.on_audio_query_android-merged_res-9:/layout/notification_template_part_chronometer.xml",
+        "source": "com.lucasjosino.on_audio_query.on_audio_query_android-core-1.6.0-2:/layout/notification_template_part_chronometer.xml"
+    },
+    {
+        "merged": "com.lucasjosino.on_audio_query.on_audio_query_android-merged_res-9:/layout/notification_template_part_time.xml",
+        "source": "com.lucasjosino.on_audio_query.on_audio_query_android-core-1.6.0-2:/layout/notification_template_part_time.xml"
+    },
+    {
+        "merged": "com.lucasjosino.on_audio_query.on_audio_query_android-merged_res-9:/layout/notification_action.xml",
+        "source": "com.lucasjosino.on_audio_query.on_audio_query_android-core-1.6.0-2:/layout/notification_action.xml"
+    },
+    {
+        "merged": "com.lucasjosino.on_audio_query.on_audio_query_android-merged_res-9:/layout/notification_template_icon_group.xml",
+        "source": "com.lucasjosino.on_audio_query.on_audio_query_android-core-1.6.0-2:/layout/notification_template_icon_group.xml"
+    }
+]

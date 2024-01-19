@@ -46,3 +46,9 @@ deleteSong(int? id){
   db_recent.delete(id);
   getRecentData();
 }
+
+removeContainedSong(int? songId){
+  final db_recent=Hive.box<ModalClassAllSongs>("recent");
+  db_recent.deleteAt(songId!);
+  getRecentData();
+}

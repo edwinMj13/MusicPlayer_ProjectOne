@@ -10,7 +10,6 @@ PlayerControllers playerControllers=PlayerControllers();
 ValueNotifier<List<String>> db_Notifier=ValueNotifier([]);
 ValueNotifier<List<ModalClassAllSongs>> db_AllSongsNotifier=ValueNotifier([]);
 ValueNotifier<List<ModalClassAllSongs>> playListNotifier=ValueNotifier([]);
-ValueNotifier<List<ModalClassAllSongs>> favoritesNotifier=ValueNotifier([]);
 
 
  addAllSongs(ModalClassAllSongs modalClassAllSongs) async {

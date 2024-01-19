@@ -132,7 +132,7 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
       if (val == 1) {
        // playerControllers.scaffoldMessage(context, "msg");
         print("object");
-        removeFromPlaylist(songID!, allSongsId);
+        removeFromPlaylist(songID!);
       }
     });
   }
@@ -156,9 +156,7 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
       valueListenable: playListNotifier,
       builder: (context, value, child) {
         if (value.isEmpty) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: Text("No Data",style: TextStyle(color: Colors.blueGrey)),);
         } else {
           print(" ELSE if PlayList$value");
 
