@@ -12,6 +12,7 @@ import '../contentWidget/create_playlist_home_page.dart';
 import '../hive_db/db_albums.dart';
 import '../hive_db/db_functions.dart';
 import '../modal_class/songList.dart';
+import '../utils/colors.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -40,14 +41,12 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     ),
   ];
 
-  //late TabController tabController;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     requestStoragePermission();
-    //  tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -56,15 +55,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
     super.dispose();
     playerControllers.audioPlayer.dispose();
   }
-
-
-  /*
-  * added default tab controller globally
-  * to change floating icon to playsection to add to playlist
-  *
-  * */
-
-
 
   void requestStoragePermission() async {
     var permissionStatus = await Permission.storage.request();
@@ -110,7 +100,6 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                //   playlistAddFloating=true;
                   addFloatNotifier.value=true;
                 }else{
-               //   playlistAddFloating=false;
                   addFloatNotifier.value=false;
                 }
               }
@@ -119,7 +108,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
               valueListenable: addFloatNotifier,
               builder: (BuildContext context, value, Widget? child) {
                 return Scaffold(
-                  backgroundColor: Colors.blueGrey,
+                  backgroundColor: appThemeT,
                   floatingActionButton: value
                       ? FloatingActionButton(
                       backgroundColor: Colors.white,
@@ -128,9 +117,9 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                           return ShowDialogToAddPlaylist();
                         });
                       },
-                      child: const Icon(
+                      child:  Icon(
                         Icons.add,
-                        color: Colors.blueGrey,
+                        color: appThemeT,
                       ))
                       : null,
                   appBar: AppBar(
@@ -138,7 +127,7 @@ class _HomePageState extends State<HomePage> with TickerProviderStateMixin {
                     leading: IconButton(
                         onPressed: (){
                           Navigator.of(context).push(MaterialPageRoute(builder: (ctx){
-                            return ProfileScreen();
+                            return const ProfileScreen();
                           }));
                         },
                         icon: Image.asset("assets/panda.png")),

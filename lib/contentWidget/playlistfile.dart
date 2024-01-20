@@ -3,6 +3,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:music_player_project_one/hive_db/db_functions.dart';
 import 'package:music_player_project_one/hive_db/db_playlist.dart';
 import 'package:music_player_project_one/screens/all_songs.dart';
+import 'package:music_player_project_one/utils/colors.dart';
 
 import '../hive_db/db_playlist_names.dart';
 import '../modal_class/playlistnames.dart';
@@ -79,7 +80,7 @@ class PlayNameWidget extends StatelessWidget {
                                           },
                                           child: Text("Edit", style: TextStyle(
                                               fontSize: 20,
-                                              color: Colors.blueGrey),)),
+                                              color: appThemeT),)),
                                     ),
                                   ),
                                   Container(height: 1, width: 200,
@@ -94,7 +95,7 @@ class PlayNameWidget extends StatelessWidget {
                                       },
                                           child: Text("Delete",
                                             style: TextStyle(fontSize: 20,
-                                                color: Colors.blueGrey),)),
+                                                color: appThemeT),)),
                                     ),
                                   ),
                                 ],

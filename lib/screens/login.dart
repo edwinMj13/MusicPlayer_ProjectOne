@@ -9,6 +9,7 @@ import 'package:permission_handler/permission_handler.dart';
 import '../hive_db/db_albums.dart';
 import '../hive_db/db_functions.dart';
 import '../modal_class/songList.dart';
+import '../utils/colors.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -109,7 +110,7 @@ class _LoginPageState extends State<LoginPage> {
     return WillPopScope(
       onWillPop: () async => false,
       child: Scaffold(
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: appThemeT,
         body: SafeArea(
           child: SingleChildScrollView(
             child: Center(

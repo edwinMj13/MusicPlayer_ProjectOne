@@ -7,6 +7,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:marquee/marquee.dart';
 import 'package:music_player_project_one/hive_db/db_favorite_list.dart';
 import 'package:music_player_project_one/hive_db/db_playlist.dart';
+import 'package:music_player_project_one/utils/colors.dart';
 import 'package:music_player_project_one/utils/controllers.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 import 'dart:core';
@@ -52,6 +53,7 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
 
   ValueNotifier<bool> isShuffled = ValueNotifier(false);
   ValueNotifier<int> musicImage = ValueNotifier(0);
+  ValueNotifier<bool> isRepeated = ValueNotifier(false);
   int? songId = 0;
   late ConcatenatingAudioSource playlist;
   dynamic currentIndex;
@@ -138,7 +140,7 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
         "BottomSheetPlayer        toPlayerModal $songList\n"
         "BottomSheetPlayer        songImage $intImage\n"
         "BottomSheetPlayer        toPlayerTitle $songTitle\n");
-    double heightSheet = MediaQuery.of(context).size.height;
+  //  double heightSheet = MediaQuery.of(context).size.height;
     print("n\n"
         "n\n"
         "n\n"
@@ -175,15 +177,15 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
             void Function(void Function()) setScaffoldRebuild) {
           setScaffoldRebuilds = setScaffoldRebuild;
           return Scaffold(
-            backgroundColor: Colors.blueGrey,
-            body: fullPlayer(heightSheet, context),
+            backgroundColor: Colors.blueGrey.shade900,
+            body: fullPlayer( context),
           );
         },
       ),
     );
   }
 
-  fullPlayer(double heightSheet, BuildContext context) {
+  fullPlayer( BuildContext context) {
     double controllerIconHeight=50,
         controllerIconWidth=50,iconSize=25;
     checkIfFavorite(songList[currentIndex].display_name);
@@ -206,13 +208,12 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
 
     print("--------URIIIIIIIRIRIRIRI------       ${audiosMap}");
     return SafeArea(
-      child: Container(
-        constraints:
-            BoxConstraints(minHeight: heightSheet, maxHeight: heightSheet),
-        decoration: const BoxDecoration(color: Colors.blueGrey),
-        child: Column(children: [
+      child: SingleChildScrollView(
+        child: Column(
+            children: [
+
           const SizedBox(
-            height: 30,
+            height: 20,
           ),
           ValueListenableBuilder(
             valueListenable: musicImage,
@@ -242,6 +243,7 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
               );
             },
           ),
+
           Padding(
             padding: const EdgeInsets.only(top: 10.0, right: 10.0,left: 10.0),
             child: StreamBuilder<Duration>(
@@ -253,8 +255,8 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                     playerControllers.audioPlayer.duration ?? Duration.zero;
 
                 //  print("   -------------      StreamBuilder is Running       ----------- ${playerControllers.audioPlayer.playerState.processingState.name}");
-                String playerProcessingState = playerControllers
-                    .audioPlayer.playerState.processingState.name;
+               /* String playerProcessingState = playerControllers
+                    .audioPlayer.playerState.processingState.name;*/
                 if (playerControllers.audioPlayer.playing == true &&
                     currentPosition >= totalDuration) {
                   putPlayingStatus(false);
@@ -269,6 +271,15 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                     currentIndex=0;
                   }*/
                 }
+                if(isRepeated.value==true){
+                  String playerProcessingState = playerControllers
+                      .audioPlayer.playerState.processingState.name;
+                  //currentIndex=index;
+                  if(playerProcessingState== "completed") {
+                    playerControllers.playSongconCat(
+                        uri, playlist, currentIndex, audiosMap, context);
+                  }
+                }
 
                 checkIfFavorite(display_Name!);
                 isInThePlaylist(display_Name!);
@@ -280,7 +291,7 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                     Padding(
                       padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                       child: SizedBox(
-                        height: 40,
+                        height: 30,
                         child: songTitle!.length > 30
                             ? Marquee(
                                 text: songTitle!,
@@ -344,7 +355,7 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                           ),
                         ),
                         const SizedBox(
-                          height: 50,
+                          height: 40,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -356,8 +367,8 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                                   color: Colors.grey[100],
                                   borderRadius: BorderRadius.circular(100.0),
                                 ),
-                                child: InkWell(
-                                  onTap:(){
+                                child: IconButton(
+                                  onPressed:(){
                                     if (currentIndex != 0) {
                                       currentIndex--;
                                       playerControllers.stopSong();
@@ -372,7 +383,7 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                                           context, "Last Song");
                                     }
                                   },
-                                  child:  Icon(
+                                  icon:  Icon(
                                         Icons.skip_previous,
                                         size: iconSize,
                                       )),
@@ -424,8 +435,8 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                                   color: Colors.grey[100],
                                   borderRadius: BorderRadius.circular(100.0),
                                 ),
-                                child: InkWell(
-                                  onTap:(){
+                                child: IconButton(
+                                  onPressed:(){
                                     if (currentIndex != songList.length - 1) {
                                       currentIndex++;
                                       playerControllers.stopSong();
@@ -443,7 +454,7 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                                           context, "Last Song");
                                     }
                                   },
-                                  child: Icon(
+                                  icon: Icon(
                                         Icons.skip_next,
                                         size: iconSize,
                                       )),
@@ -460,7 +471,7 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                               flex:1,
                                 child: Text("")),
                             Expanded(
-                              flex:4,
+                              flex:6,
                               child: Container(
                                 decoration:BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -475,37 +486,41 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                                         valueListenable: isFavNotifier,
                                         builder:
                                             (BuildContext context, value, Widget? child) {
-                                          return IconButton(
-                                              onPressed: () {
-                                                if (isFavNotifier.value == false) {
-                                                  print("To Add");
-                                                  addTOfavorites(audiosMap, currentIndex);
-                                                } else {
-                                                  print("To Remove");
-                                                  List<ModalClassAllSongs> temp =
-                                                      getFavoritesListTodelete();
-                                                  List<String> tempList = temp
-                                                      .map((e) => e.display_name)
-                                                      .toList();
-                                                  if (tempList
-                                                      .contains(display_Name)) {
-                                                    int ind = tempList
-                                                        .indexOf(display_Name!);
-                                                    removeFromFavorites(ind, songId);
-                                                    playerControllers.scaffoldMessageForFav(context, "Removed",color: Colors.red);
+                                          return Tooltip(
+                                            message: "Favorites",
+                                            decoration: BoxDecoration(color: Colors.blueGrey[500]),
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  if (isFavNotifier.value == false) {
+                                                    print("To Add");
+                                                    addTOfavorites(audiosMap, currentIndex);
+                                                  } else {
+                                                    print("To Remove");
+                                                    List<ModalClassAllSongs> temp =
+                                                        getFavoritesListTodelete();
+                                                    List<String> tempList = temp
+                                                        .map((e) => e.display_name)
+                                                        .toList();
+                                                    if (tempList
+                                                        .contains(display_Name)) {
+                                                      int ind = tempList
+                                                          .indexOf(display_Name!);
+                                                      removeFromFavorites(ind, songId);
+                                                      playerControllers.scaffoldMessageForFav(context, "Removed",color: Colors.red);
+                                                    }
                                                   }
-                                                }
-                                              },
-                                              icon: !value
-                                                  ?  Icon(
-                                                      Icons.favorite_border,
-                                                      size: iconSize,
-                                                    )
-                                                  :  Icon(
-                                                      Icons.favorite,
-                                                      color: Colors.redAccent,
-                                                      size: iconSize,
-                                                    ));
+                                                },
+                                                icon: !value
+                                                    ?  Icon(
+                                                        Icons.favorite_border,
+                                                        size: iconSize,
+                                                      )
+                                                    :  Icon(
+                                                        Icons.favorite,
+                                                        color: Colors.redAccent,
+                                                        size: iconSize,
+                                                      )),
+                                          );
                                         },
                                       ),
                                       const SizedBox(width: 30),
@@ -513,27 +528,31 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                                         valueListenable: isShuffled,
                                         builder:
                                             (BuildContext context, value, Widget? child) {
-                                          return IconButton(
-                                              onPressed: () {
-                                                print("Value Shuffle $value");
-                                                isShuffled.value = !isShuffled.value;
-                                                //  secStatus=!secStatus;
-                                                if (isShuffled.value == true) {
-                                                  playlist.children.shuffle();
-                                                  print("songList   ---   $songList");
-                                                } else {
-                                                  getPlaylistAutomatic();
-                                                  print("songList   ---   $songList");
-                                                }
-                                              },
-                                              icon: value
-                                                  ?  Icon(Icons.shuffle,
-                                                      size: iconSize,
-                                                      color: Colors.redAccent)
-                                                  :  Icon(
-                                                      Icons.shuffle,
-                                                      size: iconSize,
-                                                    ));
+                                          return Tooltip(
+                                            message: "Shuffle",
+                                            decoration: BoxDecoration(color: Colors.blueGrey[500]),
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  print("Value Shuffle $value");
+                                                  isShuffled.value = !isShuffled.value;
+                                                  //  secStatus=!secStatus;
+                                                  if (isShuffled.value == true) {
+                                                    playlist.children.shuffle();
+                                                    print("songList   ---   $songList");
+                                                  } else {
+                                                    getPlaylistAutomatic();
+                                                    print("songList   ---   $songList");
+                                                  }
+                                                },
+                                                icon: value
+                                                    ?  Icon(Icons.shuffle,
+                                                        size: iconSize,
+                                                        color: Colors.redAccent)
+                                                    :  Icon(
+                                                        Icons.shuffle,
+                                                        size: iconSize,
+                                                      )),
+                                          );
                                         },
                                       ),
                                       const SizedBox(width: 30),
@@ -541,45 +560,72 @@ class _BottomSheetPlayerState extends State<BottomSheetPlayer> {
                                         valueListenable: isAddedToPlayListNotifier,
                                         builder:
                                             (BuildContext context, value, Widget? child) {
-                                          return IconButton(
-                                              onPressed: () {
-                                                print("Value Shuffle $value");
-                                                if(playNames.contains(display_Name)){
-                                                  playListIndex=playNames.indexOf(display_Name!);
-                                                }
-                                                print("SONG ID $songId");
+                                          return Tooltip(
+                                            message: "Playlists",
+                                            decoration: BoxDecoration(color: Colors.blueGrey[500]),
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  print("Value Playlist $value");
+                                                  if(playNames.contains(display_Name)){
+                                                    playListIndex=playNames.indexOf(display_Name!);
+                                                  }
+                                                  print("SONG ID $songId");
 
-                                                ModalClassAllSongs modalc = ModalClassAllSongs(
-                                                    uri:currentUri,
-                                                    artist: artistName,
-                                                    title: songTitle,
-                                                    display_name: display_Name!,
-                                                    album: currentAlbumName,
-                                                    id: songId!);
-                                                //  secStatus=!secStatus;
-                                                if (isAddedToPlayListNotifier.value == false) {
-                                                  showDialog(context: context, builder: (ctx){
+                                                  ModalClassAllSongs modalc = ModalClassAllSongs(
+                                                      uri:currentUri,
+                                                      artist: artistName,
+                                                      title: songTitle,
+                                                      display_name: display_Name!,
+                                                      album: currentAlbumName,
+                                                      id: songId!);
+                                                  //  secStatus=!secStatus;
+                                                  if (isAddedToPlayListNotifier.value == false) {
+                                                    showDialog(context: context, builder: (ctx){
 
-                                                    return MusicPlayerScreen_AddPlaylist(playListNameModal:modalc,callbackChangeValue: callbackChangeValue,songId:songId!);
-                                                  });
-                                                  print("songList   ---   $songList");
-                                                } else if(isAddedToPlayListNotifier.value==true) {
-                                                  removeFromPlaylist(playListIndex);
-                                                  playerControllers.scaffoldMessageForFav(context, "Removed",color: Colors.red);
-                                                  callbackChangeValue();
-                                                  print("songList   ---   $songList");
-                                                }
-                                              },
-                                              icon: value
-                                                  ?  Icon(Icons.playlist_add_check,
+                                                      return MusicPlayerScreen_AddPlaylist(playListNameModal:modalc,callbackChangeValue: callbackChangeValue,songId:songId!);
+                                                    });
+                                                    print("songList   ---   $songList");
+                                                  } else if(isAddedToPlayListNotifier.value==true) {
+                                                    removeFromPlaylist(playListIndex);
+                                                    playerControllers.scaffoldMessageForFav(context, "Removed",color: Colors.red);
+                                                    callbackChangeValue();
+                                                    print("songList   ---   $songList");
+                                                  }
+                                                },
+                                                icon: value
+                                                    ?  Icon(Icons.playlist_add_check,
+                                                    size: iconSize,
+                                                    color: Colors.redAccent)
+                                                    :  Icon(
+                                                  Icons.playlist_add,
                                                   size: iconSize,
-                                                  color: Colors.redAccent)
-                                                  :  Icon(
-                                                Icons.playlist_add,
-                                                size: iconSize,
-                                              ));
+                                                )),
+                                          );
                                         },
-                                      )
+                                      ),
+                                      const SizedBox(width: 30),
+                                      ValueListenableBuilder(
+                                        valueListenable: isRepeated,
+                                        builder: (BuildContext context, value, Widget? child) {
+                                          return Tooltip(
+                                            message: "Repeat One",
+                                            decoration: BoxDecoration(color: Colors.blueGrey[500]),
+                                            child: IconButton(
+                                                onPressed: () {
+                                                  isRepeated.value=!isRepeated.value;
+
+                                                },
+                                                icon: value
+                                                    ?  Icon(Icons.repeat_one,
+                                                    size: iconSize,
+                                                    color: Colors.redAccent)
+                                                    :  Icon(
+                                                  Icons.repeat,
+                                                  size: iconSize,
+                                                )),
+                                          );
+                                        },
+                                      ),
                                     ],
                                   ),
                                 ),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 
+import '../utils/colors.dart';
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -24,7 +26,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: appThemeT,
       body: SafeArea(
         child: Center(
           child: Column(
@@ -50,10 +52,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         radius: 50,
                         child: Image.asset("assets/panda.png"),
                       ),
-                      SizedBox(height: 50,),
-                      Text(name!,style: TextStyle(fontSize: 20),),
-                      SizedBox(height: 20,),
-                      Text(phno!,style: TextStyle(fontSize: 20),)
+                      const SizedBox(height: 50,),
+                      Text(name!,style: const TextStyle(fontSize: 20),),
+                      const SizedBox(height: 20,),
+                      Text(phno!,style: const TextStyle(fontSize: 20),)
                     ],
                   ),
                 ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:music_player_project_one/hive_db/db_playlist_names.dart';
 
 import '../modal_class/playlistnames.dart';
+import '../utils/colors.dart';
 
 class ShowDialogToAddPlaylist extends StatefulWidget {
   var playerController;
@@ -12,7 +13,6 @@ class ShowDialogToAddPlaylist extends StatefulWidget {
       _ShowDialogToAddPlaylistState();
 }
 
-//ShowDialogToAddPlaylist
 class _ShowDialogToAddPlaylistState extends State<ShowDialogToAddPlaylist> {
   var playerControllers;
   final playListNameController=TextEditingController();
@@ -65,9 +65,9 @@ class _ShowDialogToAddPlaylistState extends State<ShowDialogToAddPlaylist> {
               onPressed: () {
                 checkName(context);
               },
-              child: const Text(
+              child:  Text(
                 "Create",
-                style: TextStyle(color: Colors.blueGrey),
+                style: TextStyle(color: appThemeT),
               )),
           const SizedBox(
             height: 10,
@@ -87,6 +87,7 @@ class _ShowDialogToAddPlaylistState extends State<ShowDialogToAddPlaylist> {
     }else{
       PlayListName val=PlayListName(namess: names);
       addPLaylistNAmes(val);
+      Navigator.pop(context);
     }
   }
 }

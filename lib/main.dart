@@ -7,6 +7,7 @@ import 'package:music_player_project_one/screens/login.dart';
 import 'package:music_player_project_one/modal_class/db_modalclass.dart';
 import 'package:music_player_project_one/modal_class/songList.dart';
 import 'package:music_player_project_one/screens/home_page.dart';
+import 'package:music_player_project_one/utils/colors.dart';
 
 import 'modal_class/playlistnames.dart';
 
@@ -42,7 +43,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.blueGrey
+        appBarTheme: AppBarTheme(color: appThemeT),
+        primaryColor: appThemeT,
       ),
       home:  const SplashScreen(),
     );
@@ -80,7 +82,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Colors.blueGrey,
+        backgroundColor: appThemeT,
         body: Center(child: SvgPicture.asset(
           "assets/appsplash_icon.svg", height: 100, width: 100,)),
   );

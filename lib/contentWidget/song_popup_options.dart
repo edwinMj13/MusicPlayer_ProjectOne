@@ -7,6 +7,7 @@ import 'package:music_player_project_one/utils/controllers.dart';
 import '../hive_db/db_favorite_list.dart';
 import '../hive_db/db_functions.dart';
 import '../modal_class/songList.dart';
+import '../utils/colors.dart';
 import 'edit_dialog_widget.dart';
 
 class Popup_Song_Options extends StatelessWidget {
@@ -76,6 +77,7 @@ class Popup_Song_Options extends StatelessWidget {
         album: value[index].album,
         id: value[index].id);
     return PopupMenuButton<int>(
+      icon: const Icon(Icons.more_vert,color: Colors.white,),
       itemBuilder: (ctx) {
        return editOrNull(modalC.display_name);
       },

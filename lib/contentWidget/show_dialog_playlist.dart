@@ -6,6 +6,7 @@ import 'package:music_player_project_one/utils/controllers.dart';
 import '../hive_db/db_playlist.dart';
 import '../hive_db/db_playlist_names.dart';
 import '../modal_class/playlistnames.dart';
+import '../utils/colors.dart';
 
 class ShowDialogAdd extends StatefulWidget {
   final ModalClassAllSongs playListNameModal;
@@ -46,7 +47,7 @@ class _ShowDialogState extends State<ShowDialogAdd> {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10.0),
       ),
-      backgroundColor: Colors.blueGrey,
+      backgroundColor: Colors.white,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -64,7 +65,7 @@ class _ShowDialogState extends State<ShowDialogAdd> {
   Widget firstSection() {
     return Column(children: [
       const SizedBox(height: 10,),
-      const Text("Select From the Playlist",style: TextStyle(fontSize: 20,color: Colors.white),),
+       Text("Select From the Playlist",style: TextStyle(fontSize: 20,color: Colors.blueGrey[700]),),
       SizedBox(
           height:MediaQuery.of(context).size.height * 0.4,
           child: ValueListenableBuilder(
@@ -75,7 +76,7 @@ class _ShowDialogState extends State<ShowDialogAdd> {
                 padding: const EdgeInsets.all(10.0),
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: Colors.blueGrey[700],
                     borderRadius: BorderRadius.circular(10.0),
                   ),
                   child: ListView.separated(
@@ -93,10 +94,10 @@ class _ShowDialogState extends State<ShowDialogAdd> {
                             Navigator.pop(context);
                             setCallback();
                           },
-                            child: Text(itemData.namess,style: const TextStyle(fontSize: 19,color: Colors.blueGrey),));
+                            child: Text(itemData.namess,style: const TextStyle(fontSize: 19,color: Colors.white),));
                       },
                     separatorBuilder: (context,index){
-                      return const Divider();
+                      return const Divider(color: Colors.white12,);
                     },
                     itemCount: value.length,
                   ),
@@ -114,7 +115,7 @@ class _ShowDialogState extends State<ShowDialogAdd> {
             issecondVisible=true;
           });
 
-      }, child: const Text("Create Playlist",style: TextStyle(color: Colors.blueGrey),)),
+      }, child:  Text("Create Playlist",style: TextStyle(color: appThemeT),)),
     ],);
   }
 
@@ -147,7 +148,7 @@ class _ShowDialogState extends State<ShowDialogAdd> {
         ),
           onPressed: (){
         checkName(context);
-      }, child: const Text("Create",style: TextStyle(color: Colors.blueGrey),)),
+      }, child: Text("Create",style: TextStyle(color: appThemeT),)),
       const SizedBox(height: 10,),
     ],);
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:music_player_project_one/contentWidget/show_dialog_playlist.dart';
 import 'package:music_player_project_one/modal_class/songList.dart';
+import 'package:music_player_project_one/utils/colors.dart';
 import 'package:on_audio_query/on_audio_query.dart';
 
 import '../contentWidget/edit_dialog_widget.dart';
@@ -33,7 +34,8 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
   late String albumName;
   PlayerControllers playerControllers = PlayerControllers();
   bool searchStatus = false;
-  final searchController=TextEditingController();
+  final searchController = TextEditingController();
+  dynamic statefulAppBarAllSongsReset;
 
   @override
   void initState() {
@@ -77,60 +79,67 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
   Widget build(BuildContext context) {
     selectGETsection();
     return Scaffold(
+      backgroundColor: appThemeT,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: searchStatus
             ? Padding(
-              padding: const EdgeInsets.only(left: 5.0,right: 5.0),
-              child: Container(
-                height: 40,
-          padding: EdgeInsets.only(left: 4.0),
+                padding: const EdgeInsets.only(left: 5.0, right: 5.0),
+                child: Container(
+                  height: 40,
+                  padding: const EdgeInsets.only(left: 4.0),
                   decoration: BoxDecoration(
                     color: Colors.grey[100],
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-          child: TextField(
-              controller: searchController,
-              onChanged: searchBar,
-              decoration:  InputDecoration(
-                border: InputBorder.none,
-                hintText: "Search",
-                prefixIcon: Icon(Icons.search),
-                suffixIcon: IconButton(onPressed: (){
-                  setState(() {
-                    searchStatus=!searchStatus;
-                    searchController.text="";
-                  });
-                }, icon: const Icon(Icons.close)),
-              ),
-          ),
+                  child: TextField(
+                    controller: searchController,
+                    onChanged: searchBar,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: "Search",
+                      prefixIcon: Icon(Icons.search,color: appThemeT,),
+                      suffixIcon: IconButton(
+                          onPressed: () {
+                            setState(() {
+                              searchStatus = !searchStatus;
+                              searchController.text = "";
+                            });
+                          },
+                          icon:  Icon(Icons.close,color: appThemeT,)),
+                    ),
+                  ),
                 ),
-            )
+              )
             : Text(title),
       ),
       body: valueListenableBuilder,
       floatingActionButton: fromPageName == "all"
           ? FloatingActionButton(
+        backgroundColor: Colors.white,
               onPressed: () {
                 setState(() {
-                  searchStatus=!searchStatus;
+                  searchStatus = !searchStatus;
                 });
               },
-              child: const Icon(Icons.search),
+              child:  Icon(Icons.search,color: appThemeT,),
             )
           : null,
     );
   }
 
-  popupForPlaylist(List<ModalClassAllSongs> value, int? songID, int? allSongsId) {
+  popupForPlaylist(
+      List<ModalClassAllSongs> value, int? songID, int? allSongsId) {
     print("allSongID  popupForPlaylist  $allSongsId");
-    return PopupMenuButton<int>(itemBuilder: (ctx) {
+    return PopupMenuButton<int>(
+      icon: Icon(Icons.more_vert,color: Colors.white,),
+        itemBuilder: (ctx) {
       return [
         const PopupMenuItem(value: 1, child: Text("Remove from playlist")),
       ];
     }, onSelected: (val) {
       if (val == 1) {
-       // playerControllers.scaffoldMessage(context, "msg");
+        // playerControllers.scaffoldMessage(context, "msg");
         print("object");
         removeFromPlaylist(songID!);
       }
@@ -138,17 +147,19 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
   }
 
   popupForFavorites(List<ModalClassAllSongs> value, int index) {
-    return PopupMenuButton<int>(itemBuilder: (ctx){
-      return [ const PopupMenuItem(
-        value: 1,
-          child: Text("Remove from favorites")),];
-    },
-    onSelected: (val){
-      if(val==1){
-
-        removeFromFavorites(index, value[index].allSongsId);
-      }
-    },);
+    return PopupMenuButton<int>(
+      icon: Icon(Icons.more_vert,color: Colors.white,),
+      itemBuilder: (ctx) {
+        return [
+          const PopupMenuItem(value: 1, child: Text("Remove from favorites")),
+        ];
+      },
+      onSelected: (val) {
+        if (val == 1) {
+          removeFromFavorites(index, value[index].allSongsId);
+        }
+      },
+    );
   }
 
   playlistSection() {
@@ -156,7 +167,9 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
       valueListenable: playListNotifier,
       builder: (context, value, child) {
         if (value.isEmpty) {
-          return const Center(child: Text("No Data",style: TextStyle(color: Colors.blueGrey)),);
+          return const Center(
+            child: Text("No Data", style: TextStyle(color: Colors.blueGrey)),
+          );
         } else {
           print(" ELSE if PlayList$value");
 
@@ -167,11 +180,11 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
                 selectedPlaylistSongs.add(elem);
               }
             }*/
-            for(int i=0;i<value.length;i++){
+            for (int i = 0; i < value.length; i++) {
               print("PlayList${value[i].display_name}");
               if (title == value[i].playListName) {
                 ModalClassAllSongs modalClassAllSongs = ModalClassAllSongs(
-                  songId: i,
+                    songId: i,
                     playListName: value[i].playListName,
                     favoritesListStatus: value[i].favoritesListStatus,
                     playListStatus: value[i].playListStatus,
@@ -184,18 +197,22 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
                     album: value[i].album,
                     id: value[i].id);
                 selectedPlaylistSongs.add(modalClassAllSongs);
-             //   selectedPlaylistSongs
+                //   selectedPlaylistSongs
               }
             }
           }
           print("selectedPlaylistSongs$selectedPlaylistSongs");
-          if(selectedPlaylistSongs.isEmpty){
+          if (selectedPlaylistSongs.isEmpty) {
             print("selectedPlaylistSongs.isEmpty$selectedPlaylistSongs");
-            return const Center(child: Text("No Data",style: TextStyle(color: Colors.blueGrey)),);
-          }else if(selectedPlaylistSongs==null){
+            return const Center(
+              child: Text("No Data", style: TextStyle(color: Colors.blueGrey)),
+            );
+          } else if (selectedPlaylistSongs == null) {
             print("selectedPlaylistSongs.isNULL$selectedPlaylistSongs");
-            return const Center(child: Text("No Data",style: TextStyle(color: Colors.blueGrey)),);
-          }else {
+            return const Center(
+              child: Text("No Data", style: TextStyle(color: Colors.blueGrey)),
+            );
+          } else {
             print("selectedPlaylistSongs HAS DATA $selectedPlaylistSongs");
             return ListView.separated(
               itemBuilder: (context, index) {
@@ -220,17 +237,17 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
                         type: ArtworkType.AUDIO,
                         nullArtworkWidget: const Icon(
                           Icons.music_note,
-                          color: Colors.black,
+                          color: Colors.white,
                         )),
                   ),
                   title: RichText(
                       overflow: TextOverflow.ellipsis,
                       text: TextSpan(
                           text: selectedPlaylistSongs[index].display_name,
-                          style: TextStyle(color: Colors.black, fontSize: 17))
-                  ),
-                  subtitle: Text("${selectedPlaylistSongs[index].artist}"),
-                  trailing: popupForPlaylist(selectedPlaylistSongs,
+                          style: TextStyle(color: Colors.white, fontSize: 17))),
+                  subtitle: Text("${selectedPlaylistSongs[index].artist}",style: TextStyle(color: Colors.white70),),
+                  trailing: popupForPlaylist(
+                      selectedPlaylistSongs,
                       selectedPlaylistSongs[index].songId,
                       selectedPlaylistSongs[index].allSongsId),
                   onTap: () {
@@ -246,7 +263,7 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
               },
               itemCount: selectedPlaylistSongs.length,
               separatorBuilder: (context, index) {
-                return const Divider();
+                return const Divider(color: Colors.white12,);
               },
             );
           }
@@ -282,16 +299,20 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
                       type: ArtworkType.AUDIO,
                       nullArtworkWidget: const Icon(
                         Icons.music_note,
-                        color: Colors.black,
+                        color: Colors.white,
                       )),
                 ),
-                title: RichText(overflow: TextOverflow.ellipsis,
+                title: RichText(
+                    overflow: TextOverflow.ellipsis,
                     text: TextSpan(
                         text: value[index].display_name,
-                        style: TextStyle(color: Colors.black,fontSize: 17))
-                ),
-                subtitle: Text("${value[index].artist}"),
-                trailing: Popup_Song_Options(value:value, index:index,setCallback:setStateCallback,fromPage:"allsongs"),
+                        style: const TextStyle(color: Colors.white, fontSize: 17))),
+                subtitle: Text("${value[index].artist}",style: TextStyle(color: Colors.white70),),
+                trailing: Popup_Song_Options(
+                    value: value,
+                    index: index,
+                    setCallback: setStateCallback,
+                    fromPage: "allsongs"),
                 onTap: () {
                   playerScreen(value[index].uri!, index, value, value[index].id,
                       value[index].display_name, value[index].artist!);
@@ -300,7 +321,7 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
             },
             itemCount: value.length,
             separatorBuilder: (context, index) {
-              return const Divider();
+              return  Divider(color: Colors.white12,);
             },
           );
         }
@@ -308,17 +329,13 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
     );
   }
 
-  void setStateCallback(){
+  void setStateCallback() {
     //print("QWERTYUIOASDFGHJKLZXCVBNM");
-    setState(() {
-
-    });
+    setState(() {});
   }
 
-  setStateMethod(){
-    setState(() {
-
-    });
+  setStateMethod() {
+    setState(() {});
   }
 
   albumSection() {
@@ -355,17 +372,20 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
                       type: ArtworkType.AUDIO,
                       nullArtworkWidget: const Icon(
                         Icons.music_note,
-                        color: Colors.black,
+                        color: Colors.white,
                       )),
                 ),
-                title: RichText(
-                    overflow: TextOverflow.ellipsis,
-                    text: TextSpan(text: selectedAlbumSongs[index].display_name,
-                    style: TextStyle(color: Colors.black,fontSize: 17))
+                title: Padding(
+                  padding: const EdgeInsets.only(right: 10.0),
+                  child: RichText(
+                      overflow: TextOverflow.ellipsis,
+                      text: TextSpan(
+                          text: selectedAlbumSongs[index].display_name,
+                          style: const TextStyle(color: Colors.white, fontSize: 17))),
                 ),
-                subtitle: Text("${selectedAlbumSongs[index].artist}"),
+                subtitle: Text("${selectedAlbumSongs[index].artist}",style: const TextStyle(color: Colors.white70),),
                 //      trailing: whichWidget(selectedAlbumSongs,index),
-                onTap: () {
+                onTap: (){
                   playerScreen(
                       selectedAlbumSongs[index].uri!,
                       index,
@@ -378,7 +398,7 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
             },
             itemCount: selectedAlbumSongs.length,
             separatorBuilder: (context, index) {
-              return const Divider();
+              return const Divider(color: Colors.white12,);
             },
           );
         }
@@ -409,16 +429,15 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
                       type: ArtworkType.AUDIO,
                       nullArtworkWidget: const Icon(
                         Icons.music_note,
-                        color: Colors.black,
+                        color: Colors.white,
                       )),
                 ),
-                title:
-                    RichText(overflow: TextOverflow.ellipsis,
-                        text: TextSpan(
-                            text: value[index].display_name,
-                            style: TextStyle(color: Colors.black,fontSize: 17))
-                    ),
-                subtitle: Text("${value[index].artist}"),
+                title: RichText(
+                    overflow: TextOverflow.ellipsis,
+                    text: TextSpan(
+                        text: value[index].display_name,
+                        style: TextStyle(color: Colors.white, fontSize: 17))),
+                subtitle: Text("${value[index].artist}",style: TextStyle(color: Colors.white70),),
                 trailing: popupForFavorites(value, index),
                 onTap: () {
                   playerScreen(value[index].uri!, index, value, value[index].id,
@@ -428,7 +447,7 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
             },
             itemCount: value.length,
             separatorBuilder: (context, index) {
-              return const Divider();
+              return const Divider(color: Colors.white12,);
             },
           );
         }
@@ -465,30 +484,30 @@ class _AllSongsScreenState extends State<AllSongsScreen> {
                       type: ArtworkType.AUDIO,
                       nullArtworkWidget: const Icon(
                         Icons.music_note,
-                        color: Colors.black,
+                        color: Colors.white,
                       )),
                 ),
-                title: RichText(overflow: TextOverflow.ellipsis,
+                title: RichText(
+                    overflow: TextOverflow.ellipsis,
                     text: TextSpan(
                         text: value[index].display_name,
-                        style: const TextStyle(color: Colors.black,fontSize: 17))
-                ),
-                subtitle: Text("${value[index].artist}"),
-                   trailing: Popup_Song_Options(value:value, index:index,setCallback:setStateCallback,fromPage:"recent"),
+                        style: const TextStyle(
+                            color: Colors.white, fontSize: 17))),
+                subtitle: Text("${value[index].artist}",style: TextStyle(color: Colors.white70),),
+                trailing: Popup_Song_Options(
+                    value: value,
+                    index: index,
+                    setCallback: setStateCallback,
+                    fromPage: "recent"),
                 onTap: () {
-                  playerScreen(
-                      value[index].uri!,
-                      index,
-                      value,
-                      value[index].id,
-                      value[index].display_name,
-                      value[index].artist!);
+                  playerScreen(value[index].uri!, index, value, value[index].id,
+                      value[index].display_name, value[index].artist!);
                 },
               );
             },
             itemCount: value.length,
             separatorBuilder: (context, index) {
-              return const Divider();
+              return  Divider(color: Colors.white12,);
             },
           );
         }
