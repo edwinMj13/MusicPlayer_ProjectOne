@@ -3,6 +3,7 @@
 A new Flutter project.
 
 ## Getting Started
+![1](https://github.com/edwinMj13/MusicPlayer_ProjectOne/assets/72539533/c4b75501-bd6d-4a09-9db2-0efdfef58370)
 
 This project is a starting point for a Flutter application.
 
