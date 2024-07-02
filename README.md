@@ -4,8 +4,18 @@ A new Flutter project.
 
 ## Getting Started
 ![1](https://github.com/edwinMj13/MusicPlayer_ProjectOne/assets/72539533/cadf996f-7b23-4d8b-ad7a-56969089154c)
+Login Page
 
-This project is a starting point for a Flutter application.
+![3](https://github.com/edwinMj13/MusicPlayer_ProjectOne/assets/72539533/282ea5be-6ef8-4f37-84d7-1bd18bde195d)
+Home Page
+
+![7](https://github.com/edwinMj13/MusicPlayer_ProjectOne/assets/72539533/002cff7e-c138-42e1-a4c0-cd6e81946a26)
+All Songs Section
+
+![WhatsApp Image 2024-07-02 at 7 54 54 PM](https://github.com/edwinMj13/MusicPlayer_ProjectOne/assets/72539533/8828f7d4-16bc-4897-899e-ab9ed0cda03f)
+Music Player Screen
+
+This is a project without state management b uilt on flutter
 
 A few resources to get you started if this is your first Flutter project:
 
