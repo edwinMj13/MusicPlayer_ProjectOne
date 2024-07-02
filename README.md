@@ -12,7 +12,7 @@ Home Page
 ![7](https://github.com/edwinMj13/MusicPlayer_ProjectOne/assets/72539533/002cff7e-c138-42e1-a4c0-cd6e81946a26)
 All Songs Section
 
-![WhatsApp Image 2024-07-02 at 7 54 54 PM](https://github.com/edwinMj13/MusicPlayer_ProjectOne/assets/72539533/8828f7d4-16bc-4897-899e-ab9ed0cda03f)
+![WhatsApp Image 2024-07-02 at 7 54 54 PM (1)](https://github.com/edwinMj13/MusicPlayer_ProjectOne/assets/72539533/bdf5e28e-ad46-40b6-9319-a62cf63929b8)
 Music Player Screen
 
 This is a project without state management b uilt on flutter
