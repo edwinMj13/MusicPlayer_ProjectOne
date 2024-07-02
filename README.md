@@ -24,7 +24,7 @@ Music Player Screen
 ![WhatsApp Image 2024-07-02 at 7 54 54 PM (1)](https://github.com/edwinMj13/MusicPlayer_ProjectOne/assets/72539533/bdf5e28e-ad46-40b6-9319-a62cf63929b8)
 
 
-This is a project without state management b uilt on flutter
+This is a project built without state management.
 
 A few resources to get you started if this is your first Flutter project:
 
